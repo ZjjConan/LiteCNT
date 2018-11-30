@@ -1,0 +1,9 @@
+ubuntu path;
+
+opts.savePath = '/media/zjjconan/Experiments/tracker_zoo/Evaluation/results/';
+opts.videoPath = '/media/zjjconan/Data/Dataset/Video/OTB/';
+
+
+window path
+
+
