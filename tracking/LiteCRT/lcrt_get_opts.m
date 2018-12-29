@@ -9,13 +9,12 @@ function opts = lcrt_get_opts(varargin)
     [gparams, varargin] = vl_argparse(gparams, varargin);
     
     % backbone feature opts
-    bparams.netPath = 'D:/CNNModel/imagenet-vgg-m-2048.mat';
+    bparams.netPath = '';
     bparams.isDagNN = false;
     bparams.normalize = true;
     bparams.downsamplingFactor = 2;
     bparams.downsamplingMethod = 'avg';
     bparams.averageImage = single(reshape([122.6769, 116.67, 104.01], 1, 1, 3));
-%     bparams.averageImage = [];
     [bparams, varargin] = vl_argparse(bparams, varargin);
     
     % online head opts

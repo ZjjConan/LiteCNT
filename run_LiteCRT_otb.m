@@ -1,8 +1,8 @@
 clc; clear all; close all;
 warning off;
 
-opts.videoPath = '/media/zjjconan/Data/Dataset/Video/OTB/';
-opts.videoPath = '/media/zjjconan/Data/Dataset/Video/OTB/';
+opts.videoPath = 'D:/Dataset/Video/OTB';
+opts.savePath = 'F:\Research\tracker_zoo\Evaluation\results\My-Work\LiteCRT/';
 opts.netPath = 'backnet/vggm-conv1.mat';
 
 opts.trackerName = 'LiteCRT-test';

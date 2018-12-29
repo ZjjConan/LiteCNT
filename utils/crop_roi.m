@@ -9,7 +9,7 @@ function [patch, cropRatio, cropCoord] = crop_roi(image, bbox, opts)
     
     cropCoord = [p-s/2 p+s/2];
     cropRatio = bsxfun(@rdivide, opts.inputSize, s);
-%     cropRatio = [1 1];
+
     grids = generate_bilinear_grids(p', s', opts); 
     if opts.useGpu
         image = gpuArray(image);

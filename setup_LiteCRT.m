@@ -16,6 +16,7 @@ function setup_LiteCRT()
     addpath(fullfile(root, '/LiteCRT/utils/'));
     addpath(fullfile(root, '/LiteCRT/layers/'));
     addpath([root '/LiteCRT/mexResize/']);
+    addpath([root '/LiteCRT/headnet/']);
 
 
     % add lx tracker utils

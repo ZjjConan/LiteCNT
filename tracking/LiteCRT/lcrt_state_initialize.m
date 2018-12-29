@@ -28,7 +28,26 @@ function state = lcrt_state_initialize(img, region, opts)
     opts.bparams.cosineWindow = single(hann(featrSize(2)) * hann(featrSize(1))');
     
     inputSize = get_input_size(net_b, featrSize);
-    subStride = inputSize ./ featrSize;
+%     inputSize = round(featrSize .* substride);
+%     varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
+%     lastLayerSize = varSizes{end}(1:2);
+% %     
+%     while featrSize(1) > lastLayerSize(1)
+%         inputSize = inputSize + [1, 0];
+%         varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
+%         lastLayerSize = varSizes{end}(1:2);
+%     end
+%     while featrSize(2) > lastLayerSize(2)
+%         inputSize = inputSize + [0, 1];
+%         varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
+%         lastLayerSize = varSizes{end}(1:2);
+%     end
+%     opts.bparams.cosineWindow = single(hann(lastLayerSize(2)) * hann(lastLayerSize(1))');
+    
+%     inputSize = inputSize - 1;
+   
+    subStride = min(inputSize ./ featrSize, 4);
+    
     if strcmpi(opts.gparams.inputShape, 'square')
         opts.gparams.searchPadding = inputSize ./ targetSize - 1;
     end

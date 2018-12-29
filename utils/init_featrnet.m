@@ -14,7 +14,7 @@ function net = init_featrnet(varargin)
         net = dagnn.DagNN.fromSimpleNN(net, 'CanonicalNames', true);
     end
     net.setLayerInputs(net.layers(1).name, {'input'});
-    
+%     net.layers(1).block.pad = 0;
     % remove all padding
 %     pLayer = find_layer_index(net, opts.removeAfterThisLayer, @arrayfun);
 %     lname = {net.layers.name};
@@ -23,19 +23,19 @@ function net = init_featrnet(varargin)
 %     numLayers = numel(net.layers);
 %     for i = 1:numLayers
 %         if isa(net.layers(i).block, 'dagnn.Conv')  
-%             wsize = net.layers(i).block.size;
+% %             wsize = net.layers(i).block.size;
 % %             if opts.usePad
-%                 net.layers(i).block.pad = (wsize(1)-1)/2;
-% % %             else
-% %                 net.layers(i).block.pad = 0;
+% %                 net.layers(i).block.pad = (wsize(1)-1)/2;
+% % % %             else
+%                 net.layers(i).block.pad = 0;
 % % %             end         
-% % %         elseif isa(net.layers(i).block, 'dagnn.Pooling')
-% % %             wsize = net.layers(i).block.poolSize;
-% % %             if opts.usePad
-% % %                 net.layers(i).block.pad = (wsize(1)-1)/2;
-% % %             else
-% % %                 net.layers(i).block.pad = 0;
-% % %             end
+%         elseif isa(net.layers(i).block, 'dagnn.Pooling')
+% % % %             wsize = net.layers(i).block.poolSize;
+% % % %             if opts.usePad
+% % % %                 net.layers(i).block.pad = (wsize(1)-1)/2;
+% % % %             else
+%                 net.layers(i).block.pad = 0;
+%             end
 %         end
 %     end
     
