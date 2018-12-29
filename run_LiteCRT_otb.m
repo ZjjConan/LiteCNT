@@ -11,7 +11,7 @@ opts.verbose = false;
 opts.useGpu = true;
 opts.saveResult = true;
 opts.videoList = [];
-opts.settingFcn = @setting_lcrt_forfun;
+opts.settingFcn = @setting_lcrt_cvpr2019;
 opts.trackerFcn = @tracker_lcrt;
 
 [~, opts.runFileName, ~] = fileparts(mfilename('fullpath'));

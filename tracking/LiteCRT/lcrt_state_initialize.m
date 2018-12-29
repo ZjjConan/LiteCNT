@@ -46,7 +46,7 @@ function state = lcrt_state_initialize(img, region, opts)
     
 %     inputSize = inputSize - 1;
    
-    subStride = min(inputSize ./ featrSize, 4);
+    subStride = inputSize ./ featrSize;
     
     if strcmpi(opts.gparams.inputShape, 'square')
         opts.gparams.searchPadding = inputSize ./ targetSize - 1;
