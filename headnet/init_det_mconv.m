@@ -1,6 +1,6 @@
 function net = init_det_mconv(sz, opts)
     net = dagnn.DagNN();
-    
+        
     if opts.useProjection
         net.addLayer('detconv1', dagnn.Conv('size', [1, 1, opts.projectInDims, opts.projectOuDims], ...
                      'hasBias', true, 'pad', 0, 'stride', [1,1]), ...

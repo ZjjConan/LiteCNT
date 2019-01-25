@@ -1,47 +1,47 @@
-function run_LiteCRT_vot(initModel, settingFcn)
+function tracker_vot(netPath, settingFcn)
 
     cleanup = onCleanup(@() exit() );
 
     RandStream.setGlobalStream(RandStream('mt19937ar', 'Seed', sum(clock)));
     
 try    
-    setup_liteCRT_vot;
+    setup_vot;
     
-    opts.initModel = initModel;
+    traxserver('setup', 'polygon', {'path'});
+    
+    opts.netPath = netPath;
     opts.verbose = 0;
     opts.useGpu = 1;
     
-    runOpts = settingFcn(opts);
-     
-    % warm up
-    for i = 1:10
-        state = runOpts.state_initialize(randn(300, 300, 3, 'single'), single([50 50 120 120]), runOpts);
-    end
+    trackerOpts = settingFcn(opts);
     
-%     [wrapper_pathstr, ~, ~] = fileparts(mfilename('fullpath'));
-%     cd_ind = strfind(wrapper_pathstr, filesep());
-%     VOT_path = wrapper_pathstr(1:cd_ind(end));
-%     save([VOT_path '/runOpts.mat'], 'runOpts');
+    [image, region] = traxserver('wait');
+    [cx, cy, w, h] = get_axis_aligned_BB(region);
+    region = [cx-w/2, cy-h/2, w, h];
+    
+    img = read_img(image);
 
-    traxserver('setup', 'polygon', {'path'});
-    while true
+    state = trackerOpts.state_initialize(trackerOpts, img, region);
+
+    % warm up
+    state = trackerOpts.state_warmup(state);
         
-        [image, region] = traxserver('wait');
-
-        if isempty(image)
-            break
-        end
-
-        img = read_img(image);
-
-        if ~isempty(region)
-            [cx, cy, w, h] = get_axis_aligned_BB(region);
-            region = [cx-w/2, cy-h/2, w, h];
-            state = runOpts.state_initialize(img, region, runOpts);
-            state = runOpts.initialize(state, img);
+    tracker_initialized = false;
+    while true
+        if ~tracker_initialized
+            state = trackerOpts.initialize(state, img);
+            tracker_initialized = true;
         else
-            state = runOpts.track(state, img);
-            state = runOpts.update(state);
+            [image, region] = traxserver('wait');
+            
+            if isempty(image)
+                break
+            end
+            
+            img = read_img(image);     
+            
+            state = trackerOpts.track(state, img);
+            state = trackerOpts.update(state, img);
         end
 
         if isempty(state.result(state.currFrame, :))
@@ -53,7 +53,9 @@ try
         
         traxserver('status', double(state.result(state.currFrame, :)), parameters);
     end
-
+%     % release gpu
+%     state = trackerOpts.release(state);
+    
     traxserver('quit');
     
 catch err

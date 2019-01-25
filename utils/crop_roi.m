@@ -11,10 +11,12 @@ function [patch, cropRatio, cropCoord] = crop_roi(image, bbox, opts)
     cropRatio = bsxfun(@rdivide, opts.inputSize, s);
 
     grids = generate_bilinear_grids(p', s', opts); 
+
     if opts.useGpu
         image = gpuArray(image);
         grids = gpuArray(grids);
     end
 
     patch = vl_nnbilinearsampler(image, grids);
+
 end

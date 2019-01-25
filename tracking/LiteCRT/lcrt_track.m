@@ -1,9 +1,11 @@
 function state = lcrt_track(state, img)
 
     state.currFrame = state.currFrame + 1;
-
-    if state.gparams.resizedRatio > 1
-        img = mexResize(img, state.gparams.imageSize);
+    
+    % bug in cvpr submission
+    if state.gparams.resizedRatio ~= 1
+        % image size formated as [x y]
+        img = mexResize(img, state.gparams.imageSize([2,1]), 'linear');
     end
     
     if state.gparams.useGpu
@@ -11,7 +13,7 @@ function state = lcrt_track(state, img)
     else
         img = single(img);
     end
-    
+
     img = sub_average_img(img, state.bparams.averageImage);
     
     [p, s] = xywh_to_ccwh(state.targetRect);
@@ -19,7 +21,6 @@ function state = lcrt_track(state, img)
     bbox = ccwh_to_xywh(p, s);
     
     [patch, cropRatio] = crop_roi(img, bbox, state.gparams);
-    
     featr = lcrt_extract_feature(state.net_b, patch, state.bparams);
     
     % ----------
@@ -33,7 +34,7 @@ function state = lcrt_track(state, img)
     predictions = predictions .* state.tparams.motionWindow;
 %     show_response(patch, predictions, 0.3, state);
     % multi-scale scores
-    targetScore = max(reshape(predictions, [], state.tparams.numScales));
+    targetScore = max(reshape(predictions, [], size(patch, 4)));
     [targetScore, sdelta] = max(targetScore);
     [rdelta, cdelta] = find(predictions(:,:,:,sdelta) == targetScore, 1);
   
@@ -50,7 +51,8 @@ function state = lcrt_track(state, img)
     % ---------------------
     % Prepare training data
     % ---------------------
-    if (targetScore > 0.35 | state.currFrame < 3)
+    if targetScore > 0.3 || state.currFrame < 3
+        % training sample moving average maybe useful
         state.trainScores(end+1) = targetScore;
         state.trainFeatrs{end+1} = featr(:,:,:,sdelta);
         state.trainLabels{end+1} = circshift(state.trainLabels{1}, [rdelta cdelta]);

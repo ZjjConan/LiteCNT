@@ -9,4 +9,4 @@ repo_path = wrapper_path(1:cd_ind(end)-1);
 
 addpath(repo_path);
 
-setup_liteCRT();
+setup_LiteCRT();

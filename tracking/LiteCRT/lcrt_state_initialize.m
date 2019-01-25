@@ -1,6 +1,7 @@
 function state = lcrt_state_initialize(img, region, opts)
     % init network for feature extraction    
     net_b = init_featrnet(opts.bparams);
+ 
     
     % contraint the target size for efficient tracking
     if max(region(3:4)) > opts.gparams.maxTargetSize
@@ -10,6 +11,7 @@ function state = lcrt_state_initialize(img, region, opts)
     else
         resizedRatio = 1;
     end
+
     targetSize = round(region(3:4) ./ resizedRatio); 
     
     % determine the output size and subsampling factor
@@ -28,23 +30,6 @@ function state = lcrt_state_initialize(img, region, opts)
     opts.bparams.cosineWindow = single(hann(featrSize(2)) * hann(featrSize(1))');
     
     inputSize = get_input_size(net_b, featrSize);
-%     inputSize = round(featrSize .* substride);
-%     varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
-%     lastLayerSize = varSizes{end}(1:2);
-% %     
-%     while featrSize(1) > lastLayerSize(1)
-%         inputSize = inputSize + [1, 0];
-%         varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
-%         lastLayerSize = varSizes{end}(1:2);
-%     end
-%     while featrSize(2) > lastLayerSize(2)
-%         inputSize = inputSize + [0, 1];
-%         varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
-%         lastLayerSize = varSizes{end}(1:2);
-%     end
-%     opts.bparams.cosineWindow = single(hann(lastLayerSize(2)) * hann(lastLayerSize(1))');
-    
-%     inputSize = inputSize - 1;
    
     subStride = inputSize ./ featrSize;
     
@@ -75,17 +60,44 @@ function state = lcrt_state_initialize(img, region, opts)
     
     sigma = ceil(targetSize ./ subStride) * opts.tparams.motionSigmaFactor; 
     motionWindow = generate_gaussian_label(featrSize, sigma, targetSize);
+%     motionWindow =  single(hann(featrSize(2)) * hann(featrSize(1))');
     
-    imageSize = round([size(img, 1), size(img, 2)] ./ resizedRatio);
+    imageSize = round([size(img, 2), size(img, 1)] ./ resizedRatio);
     gridGenerator = dagnn.AffineGridGenerator('Ho', inputSize(2), 'Wo', inputSize(1));
    
     numScales = opts.tparams.numScales;
     scaleFactor = (-floor(numScales-1)/2):ceil((numScales-1)/2);
     scaleFactor = opts.tparams.scaleStep .^ scaleFactor;
-    
+%     scaleFactor = [scaleFactor; scaleFactor];
+%     scaleFactor = [[1; scaleFactor(1, 1)], ...
+%                   [scaleFactor(1, 1); 1], ...
+%                   scaleFactor(:, 2), ...
+%                   [scaleFactor(1, 3); 1], ...
+%                   [1; scaleFactor(1, 3)]];
     if numScales > 0
         minScaleFactor = opts.tparams.scaleStep ^ ceil(log(max(5 ./ inputSize)) / log(opts.tparams.scaleStep));
-        maxScaleFactor = opts.tparams.scaleStep ^ floor(log(min(imageSize ./ targetSize([2,1]))) / log(opts.tparams.scaleStep));
+        maxScaleFactor = opts.tparams.scaleStep ^ floor(log(min(imageSize ./ targetSize)) / log(opts.tparams.scaleStep));
+    end
+    
+    
+    if opts.gparams.useDataAugmentation
+        aparams = struct();
+        ct = 1;
+        for i = 1:length(opts.aparams)
+            if length(opts.aparams(i).param) > 1
+                for j = 1:length(opts.aparams(i).param)
+                    aparams(ct).type = opts.aparams(i).type;
+                    aparams(ct).param = opts.aparams(i).param{j};
+                    ct = ct + 1;
+                end
+            else
+                aparams(ct).type = opts.aparams(i).type;
+                aparams(ct).param = opts.aparams(i).param;
+                ct = ct + 1;
+            end
+        end
+    else
+        aparams = [];
     end
     
     opts.gparams.gridGenerator = gridGenerator;
@@ -98,10 +110,11 @@ function state = lcrt_state_initialize(img, region, opts)
     opts.tparams.motionWindow = motionWindow;
     opts.tparams.scaleFactor = scaleFactor;
     opts.tparams.minSize = max(5, minScaleFactor .* targetSize);
-    opts.tparams.maxSize = min(imageSize([2,1]), maxScaleFactor .* targetSize);
+    opts.tparams.maxSize = min(imageSize, maxScaleFactor .* targetSize);
     
     opts.hparams.netOutIdx = state.net_h.getVarIndex('prediction');
     
+    state.aparams = aparams;
     state.gparams = opts.gparams;
     state.bparams = opts.bparams;
     state.hparams = opts.hparams;
@@ -110,6 +123,7 @@ function state = lcrt_state_initialize(img, region, opts)
     
     state.result = region;    
     state.targetRect = [region(1:2) ./ resizedRatio targetSize];
+    state.scaledTargetSize = targetSize;
     
     state.targetScore = 1; 
     state.currFrame = 1;

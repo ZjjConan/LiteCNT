@@ -54,7 +54,6 @@ function net = init_featrnet(varargin)
                 error('not support');
         end
     end 
-    
     net = sort_layers(net);
     net.rebuild();
 %     if opts.useGpu

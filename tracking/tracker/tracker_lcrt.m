@@ -5,14 +5,18 @@ function [result, fps, trkMemory, nreset] = tracker_lcrt(cfg, opts)
     tprocess.time.all = 0;
     tprocess.time.det = 0;
     tprocess.time.dup = 0;
-       
+    
+    state = opts.state_initialize(read_img(cfg.img_files{1}), cfg.ground_truth(1, :), opts);
+    
+    state = opts.state_warmup(state);
+    
     for f = 1:numel(cfg.img_files)
         img = read_img(cfg.img_files{f});
         
         time_all = tic;
         
         if f == 1
-            state = opts.state_initialize(img, cfg.ground_truth(1, :), opts);
+%             state = opts.state_initialize(img, cfg.ground_truth(1, :), opts);
             state = opts.initialize(state, img);
         else
             time_det = tic;
