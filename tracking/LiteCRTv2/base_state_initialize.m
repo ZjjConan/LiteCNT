@@ -1,4 +1,4 @@
-function state = lcrtnew_state_initialize(img, region, opts)
+function state = base_state_initialize(img, region, opts)
     % init network for feature extraction    
     net_b = init_featrnet(opts.bparams);
     
@@ -11,8 +11,8 @@ function state = lcrtnew_state_initialize(img, region, opts)
         resizedRatio = 1;
     end
 
-    orgTargetSize = region(3:4);
-    scaledTargetSize = round(region(3:4) ./ resizedRatio);
+%     orgTargetSize = region(3:4);
+    scaledTargetSize = region(3:4) ./ resizedRatio;
     
     % determine the output size and subsampling factor
     switch opts.gparams.inputShape
@@ -22,13 +22,7 @@ function state = lcrtnew_state_initialize(img, region, opts)
             inputSize = round(scaledTargetSize * (1 + opts.gparams.searchPadding));
     end
     
-%     opts.bparams.cosineWindow = [];
-%     featr = lcrt_extract_feature(net_b, randn([inputSize([2,1]) 3], 'single'), opts.bparams);
-%     featrSize = [size(featr,2) size(featr,1)];
-%     if mod(featrSize(1), 2) == 0, featrSize(1) = featrSize(1) + 1; end
-%     if mod(featrSize(2), 2) == 0, featrSize(2) = featrSize(2) + 1; end
-%     opts.bparams.cosineWindow = single(hann(featrSize(2)) * hann(featrSize(1))');
-
+    
     opts.bparams.cosineWindow = [];
     varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
     lastLayerSize = varSizes{end}(1:2);
@@ -45,9 +39,7 @@ function state = lcrtnew_state_initialize(img, region, opts)
         lastLayerSize = varSizes{end}(1:2);
     end
     opts.bparams.cosineWindow = single(hann(lastLayerSize(2)) * hann(lastLayerSize(1))');
-    
-    inputSize = get_input_size(net_b, featrSize);
-   
+
     subStride = inputSize ./ featrSize;
     
     if strcmpi(opts.gparams.inputShape, 'square')
@@ -76,27 +68,35 @@ function state = lcrtnew_state_initialize(img, region, opts)
     end
     
 %     sigma = ceil(scaledTargetSize ./ subStride) * opts.tparams.motionSigmaFactor; 
-%     motionWindow = generate_gaussian_label(featrSize, sigma, scaledTargetSize);
+%     motionWindow = generate_gaussian_label(featrSize, sigma, scaledTargetSize);  
     motionWindow =  single(hann(featrSize(1)) * hann(featrSize(2))');
-    motionWindow = motionWindow / sum(motionWindow(:));    
-
-
-    imageSize = [size(img, 2), size(img, 1)];
+    motionWindow = motionWindow / sum(motionWindow(:));
+    
     gridGenerator = dagnn.AffineGridGenerator('Ho', inputSize(2), 'Wo', inputSize(1));
    
     numScales = opts.tparams.numScales;
     scaleFactor = (-floor(numScales-1)/2):ceil((numScales-1)/2);
     scaleFactor = opts.tparams.scaleStep .^ scaleFactor;
+    scaleFactor = opts.tparams.scaleStep .^ scaleFactor;
     scalePenalty = repmat(opts.tparams.scalePenalty, numScales, 1);
     scalePenalty(ceil(numScales/2)) = 1;
     opts.tparams.scalePenalty = reshape(scalePenalty, 1, 1, 1, numScales);
+     % initialize extra params
+    opts.gparams.imageSize = [size(img, 2), size(img, 1)];
     
-    
-    
-    if numScales > 0
+    if opts.tparams.numScales > 0
         minScaleFactor = opts.tparams.scaleStep ^ ceil(log(max(5 ./ inputSize)) / log(opts.tparams.scaleStep));
-        maxScaleFactor = opts.tparams.scaleStep ^ floor(log(min(imageSize ./ orgTargetSize)) / log(opts.tparams.scaleStep));
+        maxScaleFactor = opts.tparams.scaleStep ^ floor(log(min(opts.gparams.imageSize ./ region(:, 3:4))) / log(opts.tparams.scaleStep));
     end
+    opts.tparams.minSize = max(5, minScaleFactor .* region(:, 3:4));
+    opts.tparams.maxSize = min(opts.gparams.imageSize, maxScaleFactor .* region(:, 3:4));
+
+%     scaleFactor = [scaleFactor; scaleFactor];
+%     scaleFactor = [[1; scaleFactor(1, 1)], ...
+%                   [scaleFactor(1, 1); 1], ...
+%                   scaleFactor(:, 2), ...
+%                   [scaleFactor(1, 3); 1], ...
+%                   [1; scaleFactor(1, 3)]];
     
     if opts.gparams.useDataAugmentation
         aparams = struct();
@@ -117,24 +117,20 @@ function state = lcrtnew_state_initialize(img, region, opts)
     else
         aparams = [];
     end
+
     
-    
+    opts.gparams.warmup = opts.gparams.warmupTimes > 0;
     opts.gparams.gridGenerator = gridGenerator;
-    opts.gparams.resizedRatio = resizedRatio;
-    opts.gparams.imageSize = imageSize;
     opts.gparams.inputSize = inputSize;
     opts.gparams.subStride = subStride;
     opts.gparams.featrSize = featrSize;
     
     opts.tparams.motionWindow = motionWindow;
     opts.tparams.scaleFactor = scaleFactor;
-    opts.tparams.minSize = max(5, minScaleFactor .* orgTargetSize);
-    opts.tparams.maxSize = min(imageSize, maxScaleFactor .* orgTargetSize);
     
     opts.hparams.netOutIdx = state.net_h.getVarIndex('prediction');
     
     state.aparams = aparams;
-    state.gparams = opts.aparams;
     state.gparams = opts.gparams;
     state.bparams = opts.bparams;
     state.hparams = opts.hparams;
@@ -144,8 +140,8 @@ function state = lcrtnew_state_initialize(img, region, opts)
     state.result = region;    
     state.targetRect = region;
     state.scaledTargetSize = scaledTargetSize;
+%     state.nrmTargetSize = newTargetSize;
     
     state.targetScore = 1; 
     state.currFrame = 1;
-    state.succIndex = 1;
 end

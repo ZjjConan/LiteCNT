@@ -1,6 +1,6 @@
 function state = lcrt_initialize(state, img)
     % bug in cvpr submission
-    if state.gparams.resizedRatio ~= 1
+    if state.gparams.resizedRatio > 1
         img = mexResize(img, double(state.gparams.imageSize([2,1])), 'linear');
     end
 

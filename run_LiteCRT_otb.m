@@ -1,19 +1,23 @@
 clc; clear all; close all;
 warning off;
 
-opts.videoPath = 'D:/Dataset/Video/UAV123/';
-opts.savePath = 'F:\Research\tracker_zoo\Evaluation\results\My-Work\LiteCRT/';
+opts.videoPath = 'D:/Dataset/Video/LaSOT/';
+opts.savePath = 'F:/Research/tracker_zoo/Evaluation/results/My-Work/LiteCRT/';
 opts.netPath = 'backnet/vggm-conv1.mat';
 
-opts.trackerName = 'uav123_LiteCRT-test';
-opts.videoAttr = 'UAV123';
-opts.verbose = false;
-opts.useGpu = true;
-opts.saveResult = true;
-opts.videoList = [];
-opts.settingFcn = @setting_lcrt_forfun;
-opts.trackerFcn = @tracker_OPE;
 
-[~, opts.runFileName, ~] = fileparts(mfilename('fullpath'));
+for learningRate = [1e-6 3e-6 5e-6 7e-6 9e-6 1e-5]
+    opts.trackerName = ['lasot_LiteCRT-test-' num2str(learningRate)];
+    opts.videoAttr = 'LaSOT-Hard';
+    opts.verbose = false;
+    opts.useGpu = true;
+    opts.saveResult = true;
+    opts.videoList = [];
+    opts.settingFcn = @(x) setting_lcrt_forfun(x, learningRate);
+%      opts.settingFcn = @setting_lcrt_cvpr2019;
+    opts.trackerFcn = @tracker_OPE;
 
-eval_tracker(opts);
+    [~, opts.runFileName, ~] = fileparts(mfilename('fullpath'));
+
+    eval_tracker(opts);
+end

@@ -35,6 +35,7 @@ function opts = lcrt_get_opts(varargin)
     
     % online head opts
     hparams.headType = 'maskConv';
+    hparams.kernelRatio = 1;
     hparams.maskSize = 5;
     hparams.alpha = 1;
     hparams.useProjection = true;
@@ -48,6 +49,7 @@ function opts = lcrt_get_opts(varargin)
     tparams.scaleStep = 1.02;
     tparams.motionSigmaFactor = 0.7;
     tparams.scaleLr = 0.8;
+    tparams.scalePenalty = 0.8;
     [tparams, varargin] = vl_argparse(tparams, varargin);
     
     % optimization opts

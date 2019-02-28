@@ -133,3 +133,27 @@ opts = ost_get_opts('verbose', opts.verbose, 'splitLayer', 'detconv1', ...
 
 
 context adding issue in init_net_online
+
+
+clc; clear all; close all;
+warning off;
+
+opts.videoPath = 'D:/Dataset/Video/LaSOT/';
+opts.savePath = 'F:/Research/tracker_zoo/Evaluation/results/My-Work/LiteCRT/';
+opts.netPath = 'backnet/vggm-conv1.mat';
+
+for learningRate = 1e-5
+    opts.trackerName = 'lasot_LiteCRT-test';
+    opts.videoAttr = 'LaSOT-test';
+    opts.verbose = true;
+    opts.useGpu = true;
+    opts.saveResult = true;
+    opts.videoList = [60];
+    opts.settingFcn = @(x) setting_lcrt_forfun(x, learningRate);
+%      opts.settingFcn = @setting_lcrt_cvpr2019;
+    opts.trackerFcn = @tracker_OPE;
+
+    [~, opts.runFileName, ~] = fileparts(mfilename('fullpath'));
+
+    eval_tracker(opts);
+end

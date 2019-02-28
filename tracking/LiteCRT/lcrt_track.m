@@ -3,7 +3,7 @@ function state = lcrt_track(state, img)
     state.currFrame = state.currFrame + 1;
     
     % bug in cvpr submission
-    if state.gparams.resizedRatio ~= 1
+    if state.gparams.resizedRatio > 1
         % image size formated as [x y]
         img = mexResize(img, state.gparams.imageSize([2,1]), 'linear');
     end
@@ -51,7 +51,7 @@ function state = lcrt_track(state, img)
     % ---------------------
     % Prepare training data
     % ---------------------
-    if targetScore > 0.3 || state.currFrame < 3
+    if targetScore > 0.35 || state.currFrame < 3
         % training sample moving average maybe useful
         state.trainScores(end+1) = targetScore;
         state.trainFeatrs{end+1} = featr(:,:,:,sdelta);

@@ -22,29 +22,12 @@ function state = lcrtnew_state_initialize(img, region, opts)
             inputSize = round(scaledTargetSize * (1 + opts.gparams.searchPadding));
     end
     
-%     opts.bparams.cosineWindow = [];
-%     featr = lcrt_extract_feature(net_b, randn([inputSize([2,1]) 3], 'single'), opts.bparams);
-%     featrSize = [size(featr,2) size(featr,1)];
-%     if mod(featrSize(1), 2) == 0, featrSize(1) = featrSize(1) + 1; end
-%     if mod(featrSize(2), 2) == 0, featrSize(2) = featrSize(2) + 1; end
-%     opts.bparams.cosineWindow = single(hann(featrSize(2)) * hann(featrSize(1))');
-
     opts.bparams.cosineWindow = [];
-    varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
-    lastLayerSize = varSizes{end}(1:2);
-    featrSize = lastLayerSize + 1 + mod(lastLayerSize, 2);
-
-    while featrSize(1) > lastLayerSize(1)
-        inputSize = inputSize + [1, 0];
-        varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
-        lastLayerSize = varSizes{end}(1:2);
-    end
-    while featrSize(2) > lastLayerSize(2)
-        inputSize = inputSize + [0, 1];
-        varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
-        lastLayerSize = varSizes{end}(1:2);
-    end
-    opts.bparams.cosineWindow = single(hann(lastLayerSize(2)) * hann(lastLayerSize(1))');
+    featr = lcrt_extract_feature(net_b, randn([inputSize([2,1]) 3], 'single'), opts.bparams);
+    featrSize = [size(featr,2) size(featr,1)];
+    if mod(featrSize(1), 2) == 0, featrSize(1) = featrSize(1) + 1; end
+    if mod(featrSize(2), 2) == 0, featrSize(2) = featrSize(2) + 1; end
+    opts.bparams.cosineWindow = single(hann(featrSize(2)) * hann(featrSize(1))');
     
     inputSize = get_input_size(net_b, featrSize);
    
@@ -75,22 +58,16 @@ function state = lcrtnew_state_initialize(img, region, opts)
         opts.bparams.averageImage = gpuArray(opts.bparams.averageImage);
     end
     
-%     sigma = ceil(scaledTargetSize ./ subStride) * opts.tparams.motionSigmaFactor; 
-%     motionWindow = generate_gaussian_label(featrSize, sigma, scaledTargetSize);
-    motionWindow =  single(hann(featrSize(1)) * hann(featrSize(2))');
-    motionWindow = motionWindow / sum(motionWindow(:));    
-
-
+    sigma = ceil(scaledTargetSize ./ subStride) * opts.tparams.motionSigmaFactor; 
+    motionWindow = generate_gaussian_label(featrSize, sigma, scaledTargetSize);
+    
     imageSize = [size(img, 2), size(img, 1)];
     gridGenerator = dagnn.AffineGridGenerator('Ho', inputSize(2), 'Wo', inputSize(1));
    
     numScales = opts.tparams.numScales;
     scaleFactor = (-floor(numScales-1)/2):ceil((numScales-1)/2);
     scaleFactor = opts.tparams.scaleStep .^ scaleFactor;
-    scalePenalty = repmat(opts.tparams.scalePenalty, numScales, 1);
-    scalePenalty(ceil(numScales/2)) = 1;
-    opts.tparams.scalePenalty = reshape(scalePenalty, 1, 1, 1, numScales);
-    
+
     
     
     if numScales > 0

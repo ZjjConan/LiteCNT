@@ -17,7 +17,7 @@ function net = init_det_nconv(sz, opts)
         lastDim = opts.projectInDims;
     end 
     
-    padsz = ceil(sz / 2);
+    padsz = ceil(sz / 2 * opts.kernelRatio);
     filsz = padsz * 2 + 1;  
     net.addLayer('detconv2', dagnn.Conv('size', [filsz(2), filsz(1), lastDim, 1], ...
                  'hasBias', true, 'pad', [padsz(2), padsz(2), padsz(1), padsz(1)], 'stride', [1, 1]), ...
@@ -31,9 +31,5 @@ function net = init_det_nconv(sz, opts)
 
     net.addLayer('loss', dagnn.LossL2, {'prediction', 'label'}, 'loss');
     net.rebuild();
-    
-%     if opts.useGpu
-%         net.move('gpu');
-%     end
 end
 

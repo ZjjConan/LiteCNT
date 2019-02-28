@@ -1,7 +1,7 @@
-function state = lcrtnew_track(state, img)
+function state = base_track(state, img)
 
     state.currFrame = state.currFrame + 1;
-    
+
     img = sub_average_img(img, state.bparams.averageImage);
     
     [p, s] = xywh_to_ccwh(state.targetRect);
@@ -10,23 +10,11 @@ function state = lcrtnew_track(state, img)
     
     [patch, cropRatio] = crop_roi(img, bbox, state.gparams);
     
-    featr = lcrt_extract_feature(state.net_b, patch, state.bparams);
+    featr = base_extract_feature(state.net_b, patch, state.bparams);
     
     % ----------
     % Estimation
     % ----------
-%     if state.gparams.useGpu
-%         featr = gpuArray(featr); 
-%     end
-%     state.net_h.eval({'input', featr});
-%     predictions = gather(state.net_h.vars(state.hparams.netOutIdx).value);
-%     predictions = predictions .* state.tparams.motionWindow;
-% %     show_response(patch, predictions, 0.3, state);
-%     % multi-scale scores
-%     targetScore = max(reshape(predictions, [], size(patch, 4)));
-%     [targetScore, sdelta] = max(targetScore);
-%     [rdelta, cdelta] = find(predictions(:,:,:,sdelta) == targetScore, 1);
-
     if state.gparams.useGpu
         featr = gpuArray(featr); 
     end
@@ -41,10 +29,10 @@ function state = lcrtnew_track(state, img)
     predictions = (1 - state.tparams.motionSigmaFactor) * predictions + state.tparams.motionSigmaFactor * state.tparams.motionWindow;
     targetScore = max(predictions(:));
     [rdelta, cdelta] = find(predictions == targetScore);
-
+  
     rdelta = mean(rdelta) - ceil(state.gparams.featrSize(2)/2);
     cdelta = mean(cdelta) - ceil(state.gparams.featrSize(1)/2);
-    state.targetScore = unnormed_targetScore;
+    state.targetScore = targetScore;
     state.targetRect(1:2) = state.targetRect(1:2) + [cdelta rdelta] .* state.gparams.subStride ./ (cropRatio(sdelta, :));
     newTargetSize = (1 - state.tparams.scaleLr) * state.targetRect(3:4) + ...
                      state.tparams.scaleLr * state.targetRect(3:4) .* state.tparams.scaleFactor(sdelta);
@@ -55,11 +43,11 @@ function state = lcrtnew_track(state, img)
     % ---------------------
     % Prepare training data
     % ---------------------
-    if (unnormed_targetScore > 0.3 || state.currFrame < 3)
+    if (unnormed_targetScore > 0.35 || state.currFrame < 3)
         % training sample moving average maybe useful
-        state.trainScores(end+1) = unnormed_targetScore;
+        state.trainScores(end+1) = targetScore;
         state.trainFeatrs{end+1} = featr(:,:,:,sdelta);
-        state.trainLabels{end+1} = circshift(state.trainLabels{1}, [rdelta cdelta]);
+        state.trainLabels{end+1} = circshift(state.trainLabels{1}(:,:,:,1), [rdelta cdelta]);
         if numel(state.trainLabels) > state.oparams.numSamples
             if state.oparams.FIFO
                 index = 2;

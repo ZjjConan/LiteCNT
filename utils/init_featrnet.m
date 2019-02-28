@@ -56,6 +56,10 @@ function net = init_featrnet(varargin)
     end 
     net = sort_layers(net);
     net.rebuild();
+%     net.initParams();
+%     scale = 0.01;
+%     value = init_weights(net.layers(1).block.size, true, scale);
+%     net = assign_value(net, get_last_pindex(net), 'value', value);
 %     if opts.useGpu
 %         net.move('gpu');
 %     end
