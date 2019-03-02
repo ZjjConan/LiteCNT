@@ -1,4 +1,4 @@
-function nbbox = project_bbox(bbox, cropCoord, cropRatio, imageSize)
+function nbbox = project_bbox(bbox, cropCoord, cropRatio)
 %     samples(:, 3:4) = samples(:, 1:2) + samples(:, 3:4);
 %     samples = bbox_clip(samples, opts.imageSize);
 % %     ok = is_valid_bbox(samples, cropCoord);

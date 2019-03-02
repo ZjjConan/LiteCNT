@@ -15,12 +15,12 @@ function opts = setting_lcrt_forfun(opts, learningRate)
                          'updateMaxIters', 5, 'initLr', learningRate, ...
                          'updateLr', learningRate, 'outputSigmaFactor', 1/12);
             
-    opts.state_initialize = @lcrtnew_state_initialize;
-    opts.state_warmup = @lcrtnew_warmup;
-    opts.initialize = @lcrtnew_initialize;
-    opts.track = @lcrtnew_track;
+    opts.state_initialize = @lcrtv2_state_initialize;
+    opts.state_warmup = @lcrtv2_warmup;
+    opts.initialize = @lcrtv2_initialize;
+    opts.track = @lcrtv2_track;
     opts.update = @lcrt_update;
-    opts.release = @lcrtnew_release;
+    opts.release = @lcrtv2_release;
                      
     % better than CVPR submissions
 %           opts = lcrt_get_opts('verbose', opts.verbose, 'useGpu', opts.useGpu, ...
