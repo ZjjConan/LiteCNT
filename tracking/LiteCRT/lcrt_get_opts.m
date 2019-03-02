@@ -19,7 +19,7 @@ function opts = lcrt_get_opts(varargin)
     bparams.averageImage = single(reshape([122.6769, 116.67, 104.01], 1, 1, 3));
     [bparams, varargin] = vl_argparse(bparams, varargin);
     
-     % augmentation opts
+    % augmentation opts
     aparams = struct();
     aparams(1).type = 'fliplr';
     aparams(1).param = [];
@@ -45,6 +45,14 @@ function opts = lcrt_get_opts(varargin)
     [hparams, varargin] = vl_argparse(hparams, varargin);
     
     % tracking opts
+    % bbr params
+    tparams.useBBR = true;
+    tparams.BBRScaleFactor = 1.05;
+    tparams.BBRInitNums = 1000;
+    tparams.BBRUpdateNums = 10;
+    tparams.BBRFeatrSize = [3 3];
+    
+    % other
     tparams.numScales = 5;
     tparams.scaleStep = 1.02;
     tparams.motionSigmaFactor = 0.7;

@@ -8,8 +8,8 @@ opts.netPath = 'backnet/vggm-conv1.mat';
 load('video_distribute.mat');
 
 for learningRate = [1e-6 2e-6 3e-6 4e-6 5e-6 6e-6 7e-6 8e-6 9e-6 1e-5]
-    opts.trackerName = ['lasot_LiteCRT-test-' num2str(learningRate)];
-    opts.videoAttr = 'LaSOT-Hard';
+    opts.trackerName = ['lasot_LiteCRTv2-BBR-' num2str(learningRate)];
+    opts.videoAttr = 'LaSOT-Test';
     opts.verbose = false;
     opts.useGpu = true;
     opts.saveResult = true;

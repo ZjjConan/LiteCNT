@@ -1,4 +1,4 @@
-function featr = base_extract_feature(net, img, opts)
+function featr = lcrtv2_extract_feature(net, img, opts)
     net.mode = 'test';
     
     if strcmpi(net.device, 'gpu')

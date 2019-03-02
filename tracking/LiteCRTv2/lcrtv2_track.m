@@ -1,4 +1,4 @@
-function state = lcrtnew_track(state, img)
+function state = lcrtv2_track(state, img)
 
     state.currFrame = state.currFrame + 1;
     
@@ -8,7 +8,7 @@ function state = lcrtnew_track(state, img)
     s = bsxfun(@times, s, state.tparams.scaleFactor');
     bbox = ccwh_to_xywh(p, s);
     
-    [patch, cropRatio] = crop_roi(img, bbox, state.gparams);
+    [patch, cropRatio, cropCoord] = crop_roi(img, bbox, state.gparams);
     
     featr = lcrt_extract_feature(state.net_b, patch, state.bparams);
     
@@ -49,6 +49,29 @@ function state = lcrtnew_track(state, img)
     newTargetSize = (1 - state.tparams.scaleLr) * state.targetRect(3:4) + ...
                      state.tparams.scaleLr * state.targetRect(3:4) .* state.tparams.scaleFactor(sdelta);
     state.targetRect(3:4) = min(max(newTargetSize, state.tparams.minSize), state.tparams.maxSize);
+    
+    
+    if (state.tparams.useBBR && unnormed_targetScore > 0.7)
+        samples = generate_samples('gaussian', state.targetRect, 100, state.gparams.imageSize, ...
+            state.tparams.BBRScaleFactor, 0.05, 0.05);
+        r = overlap_ratio(samples, state.targetRect);
+        [r, i] = sort(r, 'descend');
+        a = find(r > 0.7);
+        a = a(1:min(numel(a), 5));
+        if ~all(a == 0) 
+            samples = samples(i(a), :);
+            projected_samples = project_bbox(samples, cropCoord(sdelta, :), cropRatio(sdelta, :));  
+            projected_samples(:, 1:2) = projected_samples(:, 1:2) ./ state.gparams.subStride;
+            projected_samples(:, 3:4) = projected_samples(:, 3:4) ./ state.gparams.subStride;
+
+            featr_bbr = crop_roi(featr(:,:,:,sdelta), projected_samples, state.tparams);
+
+            X = permute(gather(featr_bbr), [4,3,1,2]);
+            X = X(:,:);
+            bbr_samples = predict_bbox_regressor(state.BBR.model, X, samples);
+            state.targetRect = mean(bbr_samples, 1);
+        end
+    end
     
     state.result(state.currFrame, :) = state.targetRect;
     

@@ -1,4 +1,4 @@
-function state = base_warmup(state)
+function state = lcrtv2_warmup(state)
 
     if state.gparams.warmupTimes > 0
         % store tracking params
@@ -7,6 +7,7 @@ function state = base_warmup(state)
         initMinIters = state.oparams.initMinIters;
         initMaxIters = state.oparams.initMaxIters;
         initLr = state.oparams.initLr;
+        paramSize = state.paramSize;
         
         % set a very lite params for warmup
         state.targetRect = [20 20 20 20];
@@ -21,15 +22,17 @@ function state = base_warmup(state)
             if state.gparams.useGpu
                 img = gpuArray(img);
             end
-            state = base_initialize(state, img);    
+            state = lcrtv2_initialize(state, img);    
         end
         
         % get tracking params backup
+        state.paramSize = paramSize;
         state.targetRect = targetRect;
         state.scaledTargetSize = scaledTargetSize;
         state.oparams.initMinIters = initMinIters;
         state.oparams.initMaxIters = initMaxIters;
         state.oparams.initLr = initLr;
+        
     end
     state.gparams.warmup = false;
 end
