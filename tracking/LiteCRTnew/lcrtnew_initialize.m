@@ -5,10 +5,10 @@ function state = lcrtnew_initialize(state, img)
     sigma = ceil(state.scaledTargetSize ./ state.gparams.subStride) .* state.oparams.outputSigmaFactor ;
     label = generate_gaussian_label(state.gparams.featrSize, sigma, state.scaledTargetSize);
     
-%     [patch, label] = data_augmenter(img, label, state);
-    
-    patch = crop_roi(img, state.targetRect, state.gparams);
-    patch = aug_img(patch); patch = cat(4, patch{:});
+    [patch, label] = data_augmenter(img, label, state);
+%     label(:,:,:,2:end) = [];
+%     patch = crop_roi(img, state.targetRect, state.gparams);
+%     patch = aug_img(patch); patch = cat(4, patch{:});
     featr = lcrt_extract_feature(state.net_b, patch, state.bparams);
 %     
 %     if state.gparams.useDataAugmentation
@@ -41,7 +41,7 @@ function state = lcrtnew_initialize(state, img)
                       'verbose', state.oparams.verbose);
    
     state.trainFeatrs{1} = featr(:,:,:,1); 
-    state.trainLabels{1} = label;
+    state.trainLabels{1} = label(:,:,:,1);
     state.trainScores(1) = 1;
 end
 

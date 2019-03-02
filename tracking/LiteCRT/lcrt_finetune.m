@@ -68,7 +68,7 @@ function [net, state] = lcrt_finetune(net, trainFeatrs, trainLabels, state, vara
         excuTime = tic ;
         findex = perm(t);
         if opts.startFrame       
-            lindex = 1;
+            lindex = perm(t);
         else
             lindex = perm(t); 
         end

@@ -17,7 +17,7 @@ function net = init_det_mconv(sz, opts)
         lastDim = opts.projectInDims;
     end
     
-    psize = round(sz / 2);
+    psize = ceil(sz / 2);
     fsize = psize * 2 + 1;
     
     mask = (1 - opts.alpha) * ones(fsize([2,1]), 'single');

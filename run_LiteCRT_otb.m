@@ -1,14 +1,14 @@
 clc; clear all; close all;
 warning off;
 
-opts.videoPath = 'D:/Dataset/Video/LaSOT/';
-opts.savePath = 'F:/Research/tracker_zoo/Evaluation/results/My-Work/LiteCRT/';
+opts.videoPath = '/media/zjjconan/Data/Dataset/Video/Temple-color-128/';
+opts.savePath = '/media/zjjconan/Experiments/tracker_zoo/Evaluation/results/';
 opts.netPath = 'backnet/vggm-conv1.mat';
 
 
-for learningRate = [1e-6 3e-6 5e-6 7e-6 9e-6 1e-5]
-    opts.trackerName = ['lasot_LiteCRT-test-' num2str(learningRate)];
-    opts.videoAttr = 'LaSOT-Hard';
+for learningRate = [5e-6]
+    opts.trackerName = ['tpl_LiteCRTv2'];
+    opts.videoAttr = 'tc128';
     opts.verbose = false;
     opts.useGpu = true;
     opts.saveResult = true;
