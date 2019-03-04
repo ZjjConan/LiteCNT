@@ -45,11 +45,16 @@ function state = lcrtv2_track(state, img)
     rdelta = mean(rdelta) - ceil(state.gparams.featrSize(2)/2);
     cdelta = mean(cdelta) - ceil(state.gparams.featrSize(1)/2);
     state.targetScore = unnormed_targetScore;
-    state.targetRect(1:2) = state.targetRect(1:2) + [cdelta rdelta] .* state.gparams.subStride ./ (cropRatio(sdelta, :));
-    newTargetSize = (1 - state.tparams.scaleLr) * state.targetRect(3:4) + ...
-                     state.tparams.scaleLr * state.targetRect(3:4) .* state.tparams.scaleFactor(sdelta);
-    state.targetRect(3:4) = min(max(newTargetSize, state.tparams.minSize), state.tparams.maxSize);
     
+    [pos, sz] = xywh_to_ccwh(state.targetRect);
+    
+    
+    pos = pos + [cdelta rdelta] .* state.gparams.subStride ./ (cropRatio(sdelta, :));
+    sz = (1 - state.tparams.scaleLr) * sz + ...
+         state.tparams.scaleLr * sz .* state.tparams.scaleFactor(sdelta);
+    sz = min(max(sz, state.tparams.minSize), state.tparams.maxSize);
+    
+    state.targetRect = ccwh_to_xywh(pos, sz);
     
     if (state.tparams.useBBR && unnormed_targetScore > 0.7)
         samples = generate_samples('gaussian', state.targetRect, 100, state.gparams.imageSize, ...

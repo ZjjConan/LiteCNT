@@ -46,7 +46,7 @@ function opts = lcrt_get_opts(varargin)
     
     % tracking opts
     % bbr params
-    tparams.useBBR = true;
+    tparams.useBBR = false;
     tparams.BBRScaleFactor = 1.05;
     tparams.BBRInitNums = 1000;
     tparams.BBRUpdateNums = 10;

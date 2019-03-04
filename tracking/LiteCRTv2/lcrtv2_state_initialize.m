@@ -68,11 +68,7 @@ function state = lcrtv2_state_initialize(img, region, opts)
         opts.bparams.averageImage = gpuArray(opts.bparams.averageImage);
     end
     
-<<<<<<< HEAD:tracking/LiteCRTnew/lcrtnew_state_initialize.m
     motionWindow =  single(hann(featrSize(2)) * hann(featrSize(1))');
-=======
-    motionWindow =  single(hann(featrSize(1)) * hann(featrSize(2))');
->>>>>>> refs/remotes/origin/master:tracking/LiteCRTv2/lcrtv2_state_initialize.m
     motionWindow = motionWindow / sum(motionWindow(:));    
 
 
@@ -85,10 +81,6 @@ function state = lcrtv2_state_initialize(img, region, opts)
     scalePenalty = repmat(opts.tparams.scalePenalty, numScales, 1);
     scalePenalty(ceil(numScales/2)) = 1;
     opts.tparams.scalePenalty = reshape(scalePenalty, 1, 1, 1, numScales);
-<<<<<<< HEAD:tracking/LiteCRTnew/lcrtnew_state_initialize.m
-    
-=======
->>>>>>> refs/remotes/origin/master:tracking/LiteCRTv2/lcrtv2_state_initialize.m
 
     if numScales > 0
         minScaleFactor = opts.tparams.scaleStep ^ ceil(log(max(5 ./ inputSize)) / log(opts.tparams.scaleStep));
