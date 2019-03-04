@@ -32,6 +32,7 @@ function net = init_det_mconv(sz, opts)
         mask(s(1):e(1), s(2):e(2)) = opts.alpha;
     end
 
+    
     block = dagnn.MaskConv('size', [fsize(2), fsize(1), lastDim, 1], ...
                            'pad', [psize(2), psize(2), psize(1), psize(1)], ...
                            'stride', [1, 1]);

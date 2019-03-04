@@ -46,13 +46,13 @@ function opts = lcrt_get_opts(varargin)
     
     % tracking opts
     % target state estimation params
-    sparams.useTSE = false;
+    sparams.useTSE = true;
     sparams.useWEstimator = true;
     sparams.useHEstimator = true;
-    sparams.TSESigmaFactor = 1/16;
-    sparams.TSELearningRate = 0.02;
-    sparams.TSENumScaleFilters = 9;
-    sparams.TSENumInterpScales = 17;
+    sparams.TSESigmaFactor = 1/12;
+    sparams.TSELearningRate = 0.025;
+    sparams.TSENumScaleFilters = 7;
+    sparams.TSENumInterpScales = 13;
     sparams.TSEScaleFactor = 1.05;
     sparams.TSEMaxTargetSize = 31;
     sparams.TSEMinTargetSize = 8;

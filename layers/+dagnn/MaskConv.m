@@ -6,9 +6,8 @@ classdef MaskConv < dagnn.Conv
   methods
     function outputs = forward(obj, inputs, params)
       if ~obj.hasBias, params{2} = [] ; end
-%       if ~strcmpi(obj.net.mode, 'test')
-        params{1} = bsxfun(@times, params{1}, params{3});
-%       end
+
+      params{1} = bsxfun(@times, params{1}, params{3});
       outputs{1} = vl_nnconv(...
         inputs{1}, params{1}, params{2}, ...
         'pad', obj.pad, ...

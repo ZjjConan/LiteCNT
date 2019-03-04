@@ -26,4 +26,6 @@ function setup_LiteCRT()
         addpath(genpath('/media/zjjconan/Experiments/tracker_zoo/lx-trackTools'));
     end
     
+    addpath('D:/Libraries/PDollar-toolbox/channels/');
+    
 end
