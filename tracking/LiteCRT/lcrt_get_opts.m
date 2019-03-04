@@ -45,12 +45,37 @@ function opts = lcrt_get_opts(varargin)
     [hparams, varargin] = vl_argparse(hparams, varargin);
     
     % tracking opts
-    % bbr params
-    tparams.useBBR = true;
-    tparams.BBRScaleFactor = 1.05;
-    tparams.BBRInitNums = 1000;
-    tparams.BBRUpdateNums = 10;
-    tparams.BBRFeatrSize = [3 3];
+    % target state estimation params
+    sparams.useTSE = false;
+    sparams.useWEstimator = true;
+    sparams.useHEstimator = true;
+    sparams.TSESigmaFactor = 1/16;
+    sparams.TSELearningRate = 0.02;
+    sparams.TSENumScaleFilters = 9;
+    sparams.TSENumInterpScales = 17;
+    sparams.TSEScaleFactor = 1.05;
+    sparams.TSEMaxTargetSize = 31;
+    sparams.TSEMinTargetSize = 8;
+    sparams.TSELambda = 1e-2;
+    
+%     tparams.use_scale_filter = true;         % Use the fDSST scale filter or not (for speed)
+%     tparams.scale_sigma_factor = 1/16;       % Scale label function sigma
+%     tparams.scale_learning_rate = 0.025;		% Scale filter learning rate
+%     % params.number_of_scales_filter = 5;    % Number of scales
+%     tparams.number_of_scales_filter = 17; 
+%     tparams.number_of_interp_scales = 33;    % Number of interpolated scales
+%     tparams.scale_model_factor = 1.0;        % Scaling of the scale model
+%     tparams.scale_step_filter = 1.02;        % The scale factor for the scale filter
+%     tparams.scale_model_max_area = 32*16;    % Maximume area for the scale sample patch
+%     tparams.scale_feature = 'HOG4';          % Features for the scale filter (only HOG4 supported)
+%     tparams.s_num_compressed_dim = 'MAX';    % Number of compressed feature dimensions in the scale filter
+%     tparams.lambda = 1e-2;					% Scale filter regularization
+%     tparams.do_poly_interp = true;           % Do 2nd order polynomial interpolation to obtain more accurate scale
+%     tparams.useBBR = true;
+%     tparams.BBRScaleFactor = 1.05;
+%     tparams.BBRInitNums = 1000;
+%     tparams.BBRUpdateNums = 10;
+%     tparams.BBRFeatrSize = [3 3];
     
     % other
     tparams.numScales = 5;
@@ -75,6 +100,7 @@ function opts = lcrt_get_opts(varargin)
     
     % sample remove opts  
     opts.aparams = aparams; 
+    opts.sparams = sparams;
     opts.gparams = gparams;
     opts.bparams = bparams;
     opts.hparams = hparams;
