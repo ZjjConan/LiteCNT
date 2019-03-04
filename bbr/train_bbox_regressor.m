@@ -37,7 +37,13 @@ opts = ip.Results;
 
 % ------------------------------------------------------------------------
 % Get all positive examples
-[Y, O] = get_examples(bbox, gt);
+% tic
+% [Y, O] = get_examples(bbox, gt);
+% toc
+
+
+[Y, O] = get_examples_fast(bbox, gt);
+
 
 idx = find(O>opts.min_overlap);
 X = X(idx,:); Y = Y(idx,:);
@@ -105,6 +111,25 @@ for i = 1:n
 
     Y(i, :) = [dst_ctr_x dst_ctr_y dst_scl_w dst_scl_h];
 end
+
+
+% ------------------------------------------------------------------------
+function [Y, O] = get_examples_fast(bbox, gt)
+% ------------------------------------------------------------------------
+
+% overlap amounts
+O = overlap_ratio(bbox,gt);
+
+src_sc  = bbox(:, 3:4);
+src_ctr = bbox(:, 1:2) + 0.5 * bbox(:, 3:4);
+
+gtr_sc  = gt(:, 3:4);
+gtr_crt = gt(:, 1:2) + 0.5 * gt(:, 3:4); 
+
+dst_ctr = (gtr_crt - src_ctr) .* 1./src_sc;
+dst_scl = log(gtr_sc ./ src_sc); 
+
+Y = [dst_ctr, dst_scl];
 
 
 % ------------------------------------------------------------------------

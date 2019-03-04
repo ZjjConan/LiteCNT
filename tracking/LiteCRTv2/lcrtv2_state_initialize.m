@@ -120,6 +120,29 @@ function state = lcrtv2_state_initialize(img, region, opts)
     opts.tparams.minSize = max(5, minScaleFactor .* orgTargetSize);
     opts.tparams.maxSize = min(imageSize, maxScaleFactor .* orgTargetSize);
     
+    % ---------------------
+    if opts.sparams.useTSE
+        [tsEstimator, sparams] = init_tse_state(orgTargetSize, opts.sparams);
+        state.tsEstimator = tsEstimator;
+        
+        sparams.useGpu = opts.gparams.useGpu;
+        sparams.searchPadding = 0;
+        sparams.imageSize = imageSize;
+        state.sparams = sparams;
+    else
+        state.sparams = opts.sparams;
+        state.tsEstimator = [];
+    end
+    
+    
+%     [nScales, scale_step, scaleFactors, scale_filter, params] = init_scale_filter(orgTargetSize([2,1]), opts.tparams);
+%     state.sparams.nScales = nScales;
+%     state.sparams.scale_step = scale_step;
+%     state.sparams.scaleFactors = scaleFactors;
+%     state.sparams.scale_filter = scale_filter;
+%     state.sparams.params = params;
+    % ---------------------
+    
     opts.hparams.netOutIdx = state.net_h.getVarIndex('prediction');
     
     state.aparams = aparams;

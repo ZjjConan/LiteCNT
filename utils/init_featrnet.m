@@ -15,6 +15,7 @@ function net = init_featrnet(varargin)
     end
     net.setLayerInputs(net.layers(1).name, {'input'});
     net.layers(1).block.pad = 0;
+    
     % remove all padding
 %     pLayer = find_layer_index(net, opts.removeAfterThisLayer, @arrayfun);
 %     lname = {net.layers.name};

@@ -9,7 +9,10 @@ function state = lcrt_update(state, img)
                           'maxIters', state.oparams.updateMaxIters, ...
                           'learningRate', state.oparams.updateLr, ...
                           'verbose', state.oparams.verbose);
-
+        
+        if state.sparams.useTSE
+            state = tse_update(img, state);
+        end
     end
 end
 

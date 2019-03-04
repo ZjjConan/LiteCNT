@@ -2,6 +2,7 @@ function state = lcrtv2_warmup(state)
 
     if state.gparams.warmupTimes > 0
         % store tracking params
+        tsEstimator = state.tsEstimator;
         targetRect = state.targetRect;
         scaledTargetSize = state.scaledTargetSize;
         initMinIters = state.oparams.initMinIters;
@@ -26,13 +27,14 @@ function state = lcrtv2_warmup(state)
         end
         
         % get tracking params backup
+        state.tsEstimator = tsEstimator;
         state.paramSize = paramSize;
         state.targetRect = targetRect;
         state.scaledTargetSize = scaledTargetSize;
         state.oparams.initMinIters = initMinIters;
         state.oparams.initMaxIters = initMaxIters;
         state.oparams.initLr = initLr;
-        
+
     end
     state.gparams.warmup = false;
 end
