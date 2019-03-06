@@ -45,22 +45,14 @@ function opts = lcrt_get_opts(varargin)
     [hparams, varargin] = vl_argparse(hparams, varargin);
     
     % tracking opts
-<<<<<<< HEAD
-    % bbr params
-    tparams.useBBR = false;
-    tparams.BBRScaleFactor = 1.05;
-    tparams.BBRInitNums = 1000;
-    tparams.BBRUpdateNums = 10;
-    tparams.BBRFeatrSize = [3 3];
-=======
     % target state estimation params
-    sparams.useTSE = false;
+    sparams.useTSE = true;
     sparams.useWEstimator = true;
     sparams.useHEstimator = true;
     sparams.TSESigmaFactor = 1/16;
-    sparams.TSELearningRate = 0.02;
-    sparams.TSENumScaleFilters = 9;
-    sparams.TSENumInterpScales = 17;
+    sparams.TSELearningRate = 0.025;
+    sparams.TSENumScaleFilters = 7;
+    sparams.TSENumInterpScales = 13;
     sparams.TSEScaleFactor = 1.05;
     sparams.TSEMaxTargetSize = 31;
     sparams.TSEMinTargetSize = 8;
@@ -84,7 +76,6 @@ function opts = lcrt_get_opts(varargin)
 %     tparams.BBRInitNums = 1000;
 %     tparams.BBRUpdateNums = 10;
 %     tparams.BBRFeatrSize = [3 3];
->>>>>>> 807e48cb1da7bf1ae776981d99f25d64fd2867c4
     
     % other
     tparams.numScales = 5;

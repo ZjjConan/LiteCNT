@@ -35,17 +35,6 @@ function state = lcrtv2_track(state, img)
     state.targetScore = unnormed_targetScore;
     
     [pos, sz] = xywh_to_ccwh(state.targetRect);
-<<<<<<< HEAD
-    
-    
-    pos = pos + [cdelta rdelta] .* state.gparams.subStride ./ (cropRatio(sdelta, :));
-    sz = (1 - state.tparams.scaleLr) * sz + ...
-         state.tparams.scaleLr * sz .* state.tparams.scaleFactor(sdelta);
-    sz = min(max(sz, state.tparams.minSize), state.tparams.maxSize);
-    
-    state.targetRect = ccwh_to_xywh(pos, sz);
-=======
->>>>>>> 807e48cb1da7bf1ae776981d99f25d64fd2867c4
     
     pos = pos + [cdelta rdelta] .* state.gparams.subStride ./ (cropRatio(sdelta, :));
 %     newTargetSize = (1 - state.tparams.scaleLr) * state.targetRect(3:4) + ...
@@ -54,7 +43,7 @@ function state = lcrtv2_track(state, img)
     if state.sparams.useTSE
         state.targetRect = ccwh_to_xywh(pos, sz);
         stateScaleChange = tse_track(img, state);
-        sz = (1 - state.tparams.scaleLr) * sz + state.tparams.scaleLr * sz .* stateScaleChange;  
+        sz = (1 - state.tparams.scaleLr) * sz + state.tparams.scaleLr * sz .* state.tparams.scaleFactor(sdelta) .* stateScaleChange;  
     else
         sz = (1 - state.tparams.scaleLr) * sz + state.tparams.scaleLr * sz .* state.tparams.scaleFactor(sdelta);
     end
