@@ -4,8 +4,9 @@ function featr = tse_extract_feature(net, img, opts)
     if strcmpi(net.device, 'gpu')
         img = gpuArray(img);
     end
-    
+
     net.eval({'input', img});
+
     featr = net.vars(end).value;
     featr = reshape(featr, [], size(featr, 4));
 %     img = gather(img);

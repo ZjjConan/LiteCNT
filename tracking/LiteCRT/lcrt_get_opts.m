@@ -49,7 +49,11 @@ function opts = lcrt_get_opts(varargin)
     sparams.useTSE = true;
     sparams.useWEstimator = true;
     sparams.useHEstimator = true;
+<<<<<<< HEAD
     sparams.TSESigmaFactor = 1/16;
+=======
+    sparams.TSESigmaFactor = 1/12;
+>>>>>>> f9f9cd232a2e7e4a8ae1ff358930a8b879abc026
     sparams.TSELearningRate = 0.025;
     sparams.TSENumScaleFilters = 7;
     sparams.TSENumInterpScales = 13;
