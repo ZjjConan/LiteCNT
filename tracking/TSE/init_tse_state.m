@@ -8,7 +8,7 @@ function [tsEstimator, sparams] = init_tse_state(targetSize, sparams)
         resizedRatio = 1;
     end
     
-    scaledTargetSize = max(round(targetSize ./ resizedRatio), [8 8]);
+    scaledTargetSize = max(round(targetSize ./ resizedRatio), [9 9]);
     
     numScales = sparams.TSENumScaleFilters;
     scaleStep = sparams.TSEScaleFactor;
