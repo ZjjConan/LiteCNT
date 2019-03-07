@@ -37,7 +37,7 @@ function state = lcrtv2_state_initialize(img, region, opts)
         varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
         lastLayerSize = varSizes{end}(1:2);
     end
-    opts.bparams.cosineWindow = single(hann(lastLayerSize(2)) * hann(lastLayerSize(1))');
+    opts.bparams.cosineWindow = single(hann(featrSize(2)) * hann(featrSize(1))');
     
     inputSize = get_input_size(net_b, featrSize);
    
@@ -68,7 +68,7 @@ function state = lcrtv2_state_initialize(img, region, opts)
         opts.bparams.averageImage = gpuArray(opts.bparams.averageImage);
     end
     
-    motionWindow =  single(hann(featrSize(1)) * hann(featrSize(2))');
+    motionWindow =  single(hann(featrSize(2)) * hann(featrSize(1))');
     motionWindow = motionWindow / sum(motionWindow(:));    
 
 

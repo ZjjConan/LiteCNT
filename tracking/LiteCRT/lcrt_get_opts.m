@@ -46,7 +46,7 @@ function opts = lcrt_get_opts(varargin)
     
     % tracking opts
     % target state estimation params
-    sparams.useTSE = true;
+    sparams.useTSE = false;
     sparams.useWEstimator = true;
     sparams.useHEstimator = true;
     sparams.TSESigmaFactor = 1/12;
@@ -55,8 +55,10 @@ function opts = lcrt_get_opts(varargin)
     sparams.TSENumInterpScales = 13;
     sparams.TSEScaleFactor = 1.05;
     sparams.TSEMaxTargetSize = 31;
-    sparams.TSEMinTargetSize = 8;
+    sparams.TSEMinTargetSize = 9;
     sparams.TSELambda = 1e-2;
+    
+    [sparams, varargin] = vl_argparse(sparams, varargin);
     
 %     tparams.use_scale_filter = true;         % Use the fDSST scale filter or not (for speed)
 %     tparams.scale_sigma_factor = 1/16;       % Scale label function sigma

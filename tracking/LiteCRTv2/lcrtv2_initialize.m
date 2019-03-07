@@ -25,8 +25,6 @@ function state = lcrtv2_initialize(state, img)
     
         % target state predictor
     if state.sparams.useTSE
-%         state.sparams.scale_filter = scale_filter_update(gather(img_src), p([2,1]), s([2,1]), ...
-%             1, state.sparams.scale_filter, state.sparams.params);
         state = tse_update(img, state);
     end
 

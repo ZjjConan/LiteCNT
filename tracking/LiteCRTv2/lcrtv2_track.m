@@ -39,7 +39,7 @@ function state = lcrtv2_track(state, img)
     pos = pos + [cdelta rdelta] .* state.gparams.subStride ./ (cropRatio(sdelta, :));
  
     if state.sparams.useTSE
-        state.targetRect = ccwh_to_xywh(pos, sz);
+        state.targetRect = ccwh_to_xywh(pos, sz .* state.tparams.scaleFactor(sdelta));
         stateScaleChange = tse_track(img, state);
         sz = (1 - state.tparams.scaleLr) * sz + state.tparams.scaleLr * sz .* state.tparams.scaleFactor(sdelta) .* stateScaleChange;  
     else

@@ -20,22 +20,41 @@ function net = init_det_mconv(sz, opts)
     psize = ceil(sz / 2);
     fsize = psize * 2 + 1;
     
-    mask = (1 - opts.alpha) * ones(fsize([2,1]), 'single');
-    
-    if opts.alpha ~= 1
-        cfsize = fsize;
-        if max(cfsize) > opts.maskSize
-            cfsize = ceil(cfsize .* opts.maskSize / max(cfsize));
+%     sigma = ceil(fsize .* 1/8) ;
+    multiLevelMask = zeros(fsize([2,1]), 'single');
+    intervals = floor(fsize / 5);
+
+    for i = 1:5
+        if i == 5
+            cfsize = fsize;
+        else
+            cfsize = min(i*intervals - 1 + mod(i*intervals,2), fsize);
         end
-        s = ceil(size(mask)/2) - (cfsize([2,1])-1)/2;
-        e = ceil(size(mask)/2) + (cfsize([2,1])-1)/2; 
-        mask(s(1):e(1), s(2):e(2)) = opts.alpha;
+        s = ceil(size(multiLevelMask)/2) - (cfsize([2,1])-1)/2;
+        e = ceil(size(multiLevelMask)/2) + (cfsize([2,1])-1)/2; 
+        multiLevelMask(s(1):e(1), s(2):e(2)) = multiLevelMask(s(1):e(1), s(2):e(2)) + 1;
     end
+    multiLevelMask = multiLevelMask / max(multiLevelMask(:));
+%     mask = (1 - opts.alpha) * ones(fsize([2,1]), 'single');
+%     mask = generate_gaussian_label(fsize, sigma);
+%     if opts.alpha ~= 1
+% %         cfsize = ceil(fsize * 0.3);
+% %         cpsize = max(1, ceil(psize * 0.3));
+% %         cfsize =  cpsize * 2 + 1;
+%         cfsize = fsize;
+%         if max(cfsize) > opts.maskSize
+%             cfsize = ceil(cfsize .* opts.maskSize / max(cfsize));
+%         end
+%         s = ceil(size(mask)/2) - (cfsize([2,1])-1)/2;
+%         e = ceil(size(mask)/2) + (cfsize([2,1])-1)/2; 
+%         mask(s(1):e(1), s(2):e(2)) = opts.alpha;
+%     end
 
     
     block = dagnn.MaskConv('size', [fsize(2), fsize(1), lastDim, 1], ...
                            'pad', [psize(2), psize(2), psize(1), psize(1)], ...
-                           'stride', [1, 1]);
+                           'stride', [1, 1], ...
+                           'numMultiLevels', 5);
     net.addLayer('detconv2', block, lastVar, 'prediction', {'detconv2f', 'detconv2b', 'detconv2m'});
     scale = 1 / sqrt(prod(fsize)*lastDim)/1e8;
     value = init_weights([fsize(2), fsize(1), lastDim, 1], true, scale);
@@ -51,7 +70,7 @@ function net = init_det_mconv(sz, opts)
     net.params(index).weightDecay = 0;
     
     index = net.getParamIndex('detconv2m');
-    net.params(index).value = mask;
+    net.params(index).value = multiLevelMask;
     net.params(index).learningRate = 0;
     net.params(index).weightDecay = 0;
     

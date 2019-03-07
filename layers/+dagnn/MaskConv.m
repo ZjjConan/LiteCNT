@@ -1,12 +1,23 @@
 classdef MaskConv < dagnn.Conv
   properties
       mask = [];
+      numMultiLevels = 1;
   end
 
   methods
     function outputs = forward(obj, inputs, params)
       if ~obj.hasBias, params{2} = [] ; end
-
+      if strcmp(obj.net.mode, 'normal')
+        idx = randperm(obj.numMultiLevels, 1) / obj.numMultiLevels;
+        if isa(inputs{1}, 'gpuArray')
+            obj.mask = gpuArray.ones(size(params{3}));
+        else
+            obj.mask = ones(size(params{3}));
+        end
+        obj.mask(abs(params{3} - idx) < 1e-6) = 0;
+        obj.mask = obj.mask / (1 - (sum(obj.mask(:) == 0))/ numel(obj.mask));
+        params{3} = bsxfun(@times, params{3}, obj.mask);
+      end
       params{1} = bsxfun(@times, params{1}, params{3});
       outputs{1} = vl_nnconv(...
         inputs{1}, params{1}, params{2}, ...
@@ -27,6 +38,9 @@ classdef MaskConv < dagnn.Conv
       delta = derParams{1};
       derParams{1} = bsxfun(@times, delta, params{3});
       derParams{3} = sum(bsxfun(@times, delta, params{1}), 3);  
+      if strcmp(obj.net.mode, 'normal') 
+        derParams{1} = bsxfun(@times, derParams{1}, obj.mask);
+      end
     end
     
     

@@ -1,11 +1,11 @@
-function tracker_vot(netPath, settingFcn)
+function run_LiteCRT_vot(netPath, settingFcn)
 
     cleanup = onCleanup(@() exit() );
 
     RandStream.setGlobalStream(RandStream('mt19937ar', 'Seed', sum(clock)));
     
 try    
-    setup_vot;
+    setup_LiteCRT_vot;
     
     traxserver('setup', 'polygon', {'path'});
     
@@ -20,8 +20,14 @@ try
     region = [cx-w/2, cy-h/2, w, h];
     
     img = read_img(image);
-
-    state = trackerOpts.state_initialize(trackerOpts, img, region);
+    
+    if  opts.useGpu
+        img = gpuArray(single(img));
+    else
+        img = single(img);
+    end
+    
+    state = trackerOpts.state_initialize(img, region, trackerOpts);
 
     % warm up
     state = trackerOpts.state_warmup(state);
@@ -40,6 +46,12 @@ try
             
             img = read_img(image);     
             
+            if  opts.useGpu
+                img = gpuArray(single(img));
+            else
+                img = single(img);
+            end
+           
             state = trackerOpts.track(state, img);
             state = trackerOpts.update(state, img);
         end

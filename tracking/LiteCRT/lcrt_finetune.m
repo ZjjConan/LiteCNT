@@ -50,6 +50,12 @@ function [net, state] = lcrt_finetune(net, trainFeatrs, trainLabels, state, vara
 
     numData = size(trainFeatrs, 4);
     perm = prepare_data_list(numData, 1, opts.maxIters);
+  
+%     if ~opts.startFrame     
+%         perm = zeros(1, opts.maxIters);
+%         perm(1:2:end) = 1;
+%         perm(2:2:end) = numData;
+%     end
     % objective fuction
     obj = zeros(1, opts.maxIters);
     pPred = net.getVarIndex('prediction');

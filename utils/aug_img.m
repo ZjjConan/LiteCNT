@@ -25,7 +25,7 @@ for i =1:size(g_sigma,2)
 end
 
 im3 = fliplr(img);
-for i =1
+for i = 1
     idx = idx+1;
     imgs{idx,1} = im3;
 end
