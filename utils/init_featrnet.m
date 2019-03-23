@@ -14,7 +14,7 @@ function net = init_featrnet(varargin)
         net = dagnn.DagNN.fromSimpleNN(net, 'CanonicalNames', true);
     end
     net.setLayerInputs(net.layers(1).name, {'input'});
-    net.layers(1).block.pad = 0;
+%     net.layers(1).block.pad = 0;
     
     % remove all padding
 %     pLayer = find_layer_index(net, opts.removeAfterThisLayer, @arrayfun);

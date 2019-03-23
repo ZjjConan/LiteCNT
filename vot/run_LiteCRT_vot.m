@@ -21,7 +21,7 @@ try
     
     img = read_img(image);
     
-    if  opts.useGpu
+    if opts.useGpu
         img = gpuArray(single(img));
     else
         img = single(img);

@@ -33,6 +33,7 @@ function eval_tracker(varargin)
  
     for i = opts.videoList        
         if strcmpi(videos{i}, 'human4'), videos{i} = 'Human4-2'; end
+%         reset(gpuDevice);
 %         if exist([opts.savePath opts.trackerName '/' videos{i} '_' opts.trackerName '.mat'], 'file')
 %             continue;
 %         end
