@@ -20,7 +20,6 @@ function net = init_det_amrconv(sz, opts)
     psize = ceil(sz / 2);
     fsize = psize * 2 + 1;
     
-%     sigma = ceil(fsize .* 1/8) ;
     regionMask = zeros(fsize([2,1]), 'single');
     intervals = ceil(fsize / opts.numRegions);
     opts.numRegions = max(ceil(fsize ./ intervals));

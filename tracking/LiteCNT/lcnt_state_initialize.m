@@ -4,15 +4,15 @@ function state = lcnt_state_initialize(img, region, opts)
     
     % contraint the target size for efficient tracking
     if max(region(3:4)) > opts.gparams.maxTargetSize
-        resizedRatio = max(region(3:4)) ./ opts.gparams.maxTargetSize;
+        scaledRatio = max(region(3:4)) ./ opts.gparams.maxTargetSize;
     elseif max(region(3:4)) < opts.gparams.minTargetSize
-        resizedRatio = max(region(3:4)) ./ opts.gparams.minTargetSize;
+        scaledRatio = max(region(3:4)) ./ opts.gparams.minTargetSize;
     else
-        resizedRatio = 1;
+        scaledRatio = 1;
     end
 
     orgTargetSize = region(3:4);
-    scaledTargetSize = round(region(3:4) ./ resizedRatio);
+    scaledTargetSize = round(region(3:4) ./ scaledRatio);
     
     % determine the output size and subsampling factor
     switch opts.gparams.inputShape
@@ -78,7 +78,7 @@ function state = lcnt_state_initialize(img, region, opts)
     end
     
     opts.gparams.gridGenerator = gridGenerator;
-    opts.gparams.resizedRatio = resizedRatio;
+    opts.gparams.resizedRatio = scaledRatio;
     opts.gparams.imageSize = imageSize;
     opts.gparams.inputSize = inputSize;
     opts.gparams.subStride = subStride;
@@ -90,7 +90,28 @@ function state = lcnt_state_initialize(img, region, opts)
     opts.tparams.maxSize = min(imageSize, maxScaleFactor .* orgTargetSize);
     
     opts.hparams.netOutIdx = state.net_h.getVarIndex('prediction');
+
+    if opts.gparams.useDataAugmentation
+        aparams = struct();
+        ct = 1;
+        for i = 1:length(opts.aparams)
+            if length(opts.aparams(i).param) > 1
+                for j = 1:length(opts.aparams(i).param)
+                    aparams(ct).type = opts.aparams(i).type;
+                    aparams(ct).param = opts.aparams(i).param{j};
+                    ct = ct + 1;
+                end
+            else
+                aparams(ct).type = opts.aparams(i).type;
+                aparams(ct).param = opts.aparams(i).param;
+                ct = ct + 1;
+            end
+        end
+    else
+        aparams = [];
+    end
     
+    state.aparams = aparams;
     state.gparams = opts.gparams;
     state.bparams = opts.bparams;
     state.hparams = opts.hparams;
@@ -100,6 +121,7 @@ function state = lcnt_state_initialize(img, region, opts)
     state.result = region;    
     state.targetRect = region;
     state.scaledTargetSize = scaledTargetSize;
+    state.scaledRatio = scaledRatio;
     
     state.targetScore = 1; 
     state.currFrame = 1;

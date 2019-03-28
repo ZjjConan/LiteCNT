@@ -5,9 +5,18 @@ function state = lcnt_initialize(state, img)
     sigma = ceil(state.scaledTargetSize ./ state.gparams.subStride) .* state.oparams.outputSigmaFactor ;
     label = generate_gaussian_label(state.gparams.featrSize, sigma, state.scaledTargetSize);
        
-    patch = crop_roi(img, state.targetRect, state.gparams);
-    patch = aug_img(patch); patch = cat(4, patch{:});
+%     patch = crop_roi(img, state.targetRect, state.gparams);
+%     patch = aug_img(patch); patch = cat(4, patch{:});
+    [patch, label] = data_augmenter(img, label, state);
     featr = lcnt_extract_feature(state.net_b, patch, state.bparams);
+    
+    if state.gparams.useDataAugmentation
+        for i = 1:numel(state.aparams)
+            if strcmp(state.aparams(i).type, 'dropout')
+                featr(:,:,:,i) = dropout_featr_chns(featr(:,:,:,i));
+            end
+        end
+    end
     
     if state.hparams.useProjection & state.hparams.initUsePCA
         [r, c, d, n] = size(featr);

@@ -7,13 +7,13 @@ opts.netPath = 'backnet/vggm-conv1.mat';
 
 load('otb_distribute.mat');
 for learningRate = [1e-5]
-    opts.trackerName = ['otb_LiteCRTv3_test'];
+    opts.trackerName = ['otb100_LiteCRTv3_dataaug'];
     opts.videoAttr = 'OTB2015';
     opts.verbose = false;
     opts.useGpu = true;
     opts.saveResult = true;
-    opts.videoList = [];
-    opts.settingFcn = @(x) setting_lcnt_iccv2019(x, 2);
+    opts.videoList = 15:100;
+    opts.settingFcn = @(x) setting_lcnt_forfun(x, 2);
     opts.trackerFcn = @tracker_OPE;
 
     [~, opts.runFileName, ~] = fileparts(mfilename('fullpath'));

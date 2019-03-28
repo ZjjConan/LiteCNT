@@ -4,7 +4,7 @@ function [patch, label] = data_augmenter(img, label, state)
     patch = cell(length(state.aparams)+1, 1);
     label = repmat(label, 1, 1, 1, length(state.aparams)+1);
     patch{1} = crop_roi(img, state.targetRect, state.gparams);
-    scaledRatio = state.targetRect(3:4) ./ state.scaledTargetSize;
+    scaledRatio = state.scaledRatio;
 %     scaleRatio = [scaleRatio scaleRatio];
     
     for i = 1:length(state.aparams)
@@ -23,7 +23,7 @@ function [patch, label] = data_augmenter(img, label, state)
                 shift_params = state.aparams(i).param ./ scaledRatio;
                 pos = pos + shift_params;
                 shift_params = - shift_params ./ state.gparams.subStride;
-                label(:,:,:,i+1) = circshift(label(:,:,:,i+1), round(shift_params));
+                label(:,:,:,i+1) = circshift(label(:,:,:,i+1), round(shift_params([2,1])));
             case 'blur'
                 img_ = imgaussfilt(img, state.aparams(i).param);
                     
@@ -51,7 +51,7 @@ function [patch, label] = data_augmenter(img, label, state)
 
                 pos(1) = round(x1 - ref.XWorldLimits(1));
                 pos(2) = round(y1 - ref.YWorldLimits(1));
-                gparams.imageSize = [size(img_, 1) size(img_, 2)];
+                gparams.imageSize = [size(img_, 2) size(img_, 1)];
             otherwise
                 error('error type of augmentation');
         end
