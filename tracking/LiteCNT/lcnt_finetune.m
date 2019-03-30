@@ -70,7 +70,7 @@ function [net, state] = lcnt_finetune(net, trainFeatrs, trainLabels, state, vara
         excuTime = tic ;
         findex = perm(t);
         if opts.startFrame       
-            lindex = perm(t);
+            lindex = 1;
         else
             lindex = perm(t); 
         end

@@ -13,7 +13,7 @@ imgs{idx,1} = img;
 %    imgs{idx,1} = img1;
 %    %figure,imshow(mat2gray(img1))
 % end
-
+% 
 g_sigma =[10,5,1,0.1];
 
 for i =1:size(g_sigma,2)

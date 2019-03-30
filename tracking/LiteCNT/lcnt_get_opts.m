@@ -33,16 +33,16 @@ function opts = lcnt_get_opts(varargin)
             
     % data augment opts
     aparams = struct();
-    aparams(1).type = 'fliplr';
-    aparams(1).param = [];
-    aparams(2).type = 'rot';
-    aparams(2).param = {5, -5, 10, -10, 20, -20, 30, -30, 45, -45, -60, 60};
-    aparams(3).type = 'blur';
-    aparams(3).param = {[2, 0.2], [0.2, 2], [3, 1], [1, 3], [2, 2]};
-    aparams(4).type = 'shift';
-    aparams(4).param = {[8, 8], [-8, 8], [8, -8], [-8, -8]};
-    aparams(5).type = 'dropout';
-    aparams(5).param = {1, 2, 3, 4, 5, 6, 7};
+    aparams(end).type = 'fliplr';
+    aparams(end).param = [];
+    aparams(end+1).type = 'rot';
+    aparams(end).param = {5, -5, 10, -10, 20, -20, 30, -30, 45, -45, -60, 60};
+    aparams(end+1).type = 'blur';
+    aparams(end).param = {[2, 0.2], [0.2, 2], [3, 1], [1, 3], [2, 2]};
+    aparams(end+1).type = 'shift';
+    aparams(end).param = {[8, 8], [-8, 8], [8, -8], [-8, -8]};
+    aparams(end+1).type = 'dropout';
+    aparams(end).param = {1, 2, 3, 4, 5, 6, 7};
     [aparams, varargin] = vl_argparse(aparams, varargin);
     
     % other

@@ -26,6 +26,8 @@ function [patch, label] = data_augmenter(img, label, state)
                 label(:,:,:,i+1) = circshift(label(:,:,:,i+1), round(shift_params([2,1])));
             case 'blur'
                 img_ = imgaussfilt(img, state.aparams(i).param);
+%                 w = fspecial('gaussian', [5 5], state.aparams(i).param);
+%                 img_ = imfilter(img, w);
                     
             case 'rot'
                     
