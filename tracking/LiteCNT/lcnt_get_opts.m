@@ -55,6 +55,7 @@ function opts = lcnt_get_opts(varargin)
     
     % optimization opts
     oparams.outputSigmaFactor = 1/10;
+    oparams.hogomSigma = true;
     oparams.initLr = 1e-5;
     oparams.initMaxIters = 400;
     oparams.initMinIters = 100;

@@ -2,7 +2,12 @@ function state = lcnt_initialize(state, img)
 
     img = sub_average_img(img, state.bparams.averageImage);
     
-    sigma = ceil(state.scaledTargetSize ./ state.gparams.subStride) .* state.oparams.outputSigmaFactor ;
+    if state.oparams.hogomSigma
+        sigma = sqrt(prod(ceil(state.scaledTargetSize ./ state.gparams.subStride))) .* state.oparams.outputSigmaFactor ;
+        sigma = [sigma sigma];
+    else
+        sigma = ceil(state.scaledTargetSize ./ state.gparams.subStride) .* state.oparams.outputSigmaFactor ;
+    end
     label = generate_gaussian_label(state.gparams.featrSize, sigma, state.scaledTargetSize);
        
 %     patch = crop_roi(img, state.targetRect, state.gparams);
