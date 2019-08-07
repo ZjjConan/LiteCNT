@@ -13,7 +13,7 @@ This repository includes Matlab code for an unpublished tech-report (also includ
 #### A state-of-the-art lightweight tracker (around 100 KB)
 
 <p align="center">
-<img width="640" height="300" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/speed_auc_modelsize_otb2015_crop.png">
+<img width="640" height="330" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/speed_auc_modelsize_otb2015_crop.png">
 <!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
 </p>
 
