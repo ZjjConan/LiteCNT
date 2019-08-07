@@ -1,4 +1,4 @@
-## [A Lightweight Convolutional Network for Visual Tracking](XXXX)
+## [A Lightweight Convolutional Network for Visual Tracking](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/LiteCNT-LX.Yang.pdf)
 
 ### *Lingxiao Yang*
 
@@ -26,7 +26,7 @@ Most of previous researches in regression trackers mainly explore deep models fo
 
 1. Compile the MatConvNet according to the [website](http://www.vlfeat.org/matconvnet/install/)
 
-2. For *One-Pass-Evaluation*, change the paths to your local paths in `run_LiteCNT_ope.m`. For vot testing, please install the vot official toolkit, and simply copy `tracker_LiteCNT.m` to your VOT workspace.
+2. For *One-Pass-Evaluation*, change the paths to your local paths in `run_LiteCNT_ope.m`. For vot testing, please install the vot official toolkit, and simply copy `vot/tracker_LiteCNT.m` to your VOT workspace.
 
 ### Packed Results (New Results with better settings)
 
@@ -36,16 +36,30 @@ We provide our new results on various benchmarks for analysis. For VOT testing, 
 
   [OneDrive](https://1drv.ms/u/s!ApDrXo4ZyoJrb3Abh3oEphVPrKE?e=j2aAGn)
 
+
+### Results on OTB2015
+
+<p align="center">
+<img width="460" height="300" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png">
+<!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
+</p>
+
+### Results on UAV123
+
+<p align="center">
+![UAV123](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_uav123.png)
+</p>
+
 **Note:** This is a little difference to the technique paper. We use 1/10 for gaussian labels generation, and use a smaller learning rate to update the model. Some results are shown as below: 
 
 
-|	                 |   OTB2015     |  UAV123  |  VOT2017 (A)  | VOT2017 (R)  | VOT2017 (EAO) | VOT2017 (RT-EAO) |
-| :----            |    :----:     | :----:   | :----:        |  :----:      | :----:        | :----:           |
-| Tech-Report      |    65.9       |  52.2    | 0.508         | 1.547        | 0.237         | 0.218            |
-| This w AMR       |    66.4       |  52.1    | 0.509         | 1.483        | 0.248         | 0.214            |
-| This w/o AMR     |    64.3       |  50.8    | 0.504         | 1.553        | 0.230         | 0.208            |
-| CFNet [1]        |    56.3       |  47.7    | 0.473         | 3.467        | 0.126         | 0.107            |
-| DCFNet [2]       |    58.0       |  --      | --            | --           | --            | --               |
+|	                 |   OTB2015     |  UAV123    |  VOT2017 (A)  | VOT2017 (R)  | VOT2017 (EAO) | VOT2017 (RT-EAO) |
+| :----            |    :----:     | :----:     | :----:        |  :----:      | :----:        | :----:           |
+| Tech-Report      |    65.9       |  **52.2**  | 0.508         | 1.547        | 0.237         | 0.218            |
+| This w AMR       |    **66.2**   |  52.1      | **0.509**     | **1.483**    | **0.248**     | **0.214**        |
+| This w/o AMR     |    64.3       |  50.8      | 0.504         | 1.553        | 0.230         | 0.208            |
+| CFNet [1]        |    56.3       |  47.7      | 0.473         | 3.467        | 0.126         | 0.107            |
+| DCFNet [2]       |    58.0       |  --        | --            | --           | --            | --               |
 
 ------------------------------------------------
 
