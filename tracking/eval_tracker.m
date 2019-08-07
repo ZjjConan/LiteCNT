@@ -19,7 +19,7 @@ function eval_tracker(varargin)
     end
 
     % get all videos' name and loaderFunc
-    [videos, cfgReader] = loadVideos(opts.videoAttr, opts.videoPath);
+    [videos, cfgReader] = config_dataset(opts.videoAttr, opts.videoPath);
     % get opts
     trkOpts = opts.settingFcn(opts);
     

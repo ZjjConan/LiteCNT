@@ -13,15 +13,7 @@ function inSize = get_input_size(net, ouSize)
                 + block.poolSize(1);
             inSize(2) = (inSize(2) - 1) * block.stride(1) - sum(block.pad(3:4)) ...
                 + block.poolSize(1);
-        elseif isa(block, 'dagnn.UpSample')
-            inSize(1) = round(inSize(1) / block.scale);
-            inSize(2) = round(inSize(2) / block.scale);
-        
-        elseif isa(block, 'dagnn.SplitPlane')
-            inSize(1) = round(inSize(1) * block.stride);
-            inSize(2) = round(inSize(2) * block.stride);
-        end
-        
+        end  
     end
 
 end

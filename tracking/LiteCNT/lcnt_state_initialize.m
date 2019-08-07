@@ -14,13 +14,7 @@ function state = lcnt_state_initialize(img, region, opts)
     orgTargetSize = region(3:4);
     scaledTargetSize = round(region(3:4) ./ scaledRatio);
     
-    % determine the output size and subsampling factor
-    switch opts.gparams.inputShape
-        case 'square'
-            inputSize = round(repmat(sqrt(prod(scaledTargetSize * (1 + opts.gparams.searchPadding))), 1, 2));
-        case 'proportional'
-            inputSize = round(scaledTargetSize * (1 + opts.gparams.searchPadding));
-    end
+    inputSize = round(repmat(sqrt(prod(scaledTargetSize * (1 + opts.gparams.searchPadding))), 1, 2));
     
     opts.bparams.cosineWindow = [];
     varSizes = net_b.getVarSizes({'input',[inputSize 3 1]});
@@ -34,9 +28,7 @@ function state = lcnt_state_initialize(img, region, opts)
     
     subStride = inputSize ./ featrSize;
     
-    if strcmpi(opts.gparams.inputShape, 'square')
-        opts.gparams.searchPadding = inputSize ./ scaledTargetSize - 1;
-    end
+    opts.gparams.searchPadding = inputSize ./ scaledTargetSize - 1;
 
     % init head --------------------------------------------
     switch lower(opts.hparams.headType)
@@ -90,28 +82,7 @@ function state = lcnt_state_initialize(img, region, opts)
     opts.tparams.maxSize = min(imageSize, maxScaleFactor .* orgTargetSize);
     
     opts.hparams.netOutIdx = state.net_h.getVarIndex('prediction');
-
-    if opts.gparams.useDataAugmentation
-        aparams = struct();
-        ct = 1;
-        for i = 1:length(opts.aparams)
-            if length(opts.aparams(i).param) > 1
-                for j = 1:length(opts.aparams(i).param)
-                    aparams(ct).type = opts.aparams(i).type;
-                    aparams(ct).param = opts.aparams(i).param{j};
-                    ct = ct + 1;
-                end
-            else
-                aparams(ct).type = opts.aparams(i).type;
-                aparams(ct).param = opts.aparams(i).param;
-                ct = ct + 1;
-            end
-        end
-    else
-        aparams = [];
-    end
     
-    state.aparams = aparams;
     state.gparams = opts.gparams;
     state.bparams = opts.bparams;
     state.hparams = opts.hparams;

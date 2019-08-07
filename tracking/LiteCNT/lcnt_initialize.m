@@ -2,26 +2,12 @@ function state = lcnt_initialize(state, img)
 
     img = sub_average_img(img, state.bparams.averageImage);
     
-    if state.oparams.hogomSigma
-        sigma = sqrt(prod(ceil(state.scaledTargetSize ./ state.gparams.subStride))) .* state.oparams.outputSigmaFactor ;
-        sigma = [sigma sigma];
-    else
-        sigma = ceil(state.scaledTargetSize ./ state.gparams.subStride) .* state.oparams.outputSigmaFactor ;
-    end
-    label = generate_gaussian_label(state.gparams.featrSize, sigma, state.scaledTargetSize);
+    sigma = sqrt(prod(ceil(state.scaledTargetSize ./ state.gparams.subStride))) .* state.oparams.outputSigmaFactor ;
+    label = generate_gaussian_label(state.gparams.featrSize, [sigma sigma], state.scaledTargetSize);
        
-%     patch = crop_roi(img, state.targetRect, state.gparams);
-%     patch = aug_img(patch); patch = cat(4, patch{:});
-    [patch, label] = data_augmenter(img, label, state);
+    patch = crop_roi(img, state.targetRect, state.gparams);
+    patch = aug_img(patch); patch = cat(4, patch{:});
     featr = lcnt_extract_feature(state.net_b, patch, state.bparams);
-    
-    if state.gparams.useDataAugmentation
-        for i = 1:numel(state.aparams)
-            if strcmp(state.aparams(i).type, 'dropout')
-                featr(:,:,:,i) = dropout_featr_chns(featr(:,:,:,i));
-            end
-        end
-    end
     
     if state.hparams.useProjection & state.hparams.initUsePCA
         [r, c, d, n] = size(featr);
@@ -38,7 +24,7 @@ function state = lcnt_initialize(state, img)
 
     
     state.net_h = ...
-        lcnt_finetune(state.net_h, featr, label, [], state.oparams, ...
+        lcnt_finetune(state.net_h, featr, label, state.oparams, ...
                       'maxIters', state.oparams.initMaxIters, ...
                       'minIters', state.oparams.initMinIters, ...
                       'learningRate', state.oparams.initLr, ...

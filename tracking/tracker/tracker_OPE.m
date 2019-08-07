@@ -1,7 +1,5 @@
 function [result, fps, trkMemory, nreset] = tracker_OPE(cfg, opts) 
     % fix rand seed for OTB dataset to reproduce our results
-    rng('default');
-    
     tprocess.time.all = 0;
     tprocess.time.det = 0;
     tprocess.time.dup = 0;

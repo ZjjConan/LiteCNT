@@ -1,4 +1,4 @@
-function [net, state] = lcnt_finetune(net, trainFeatrs, trainLabels, state, varargin)
+function [net, state] = lcnt_finetune(net, trainFeatrs, trainLabels, varargin)
 
     opts.verbose = false;
     opts.useGpu = true;
@@ -25,18 +25,8 @@ function [net, state] = lcnt_finetune(net, trainFeatrs, trainLabels, state, vara
     % ---------------------------------------------------------------------
     %                                                Network initialization
     % ---------------------------------------------------------------------
-    state = [];
-    if isempty(state) || isempty(state.solverState)
-        state.solverState = cell(1, numel(net.params)) ;
-        state.solverState(:) = {0} ;
-    else
-        for s = 1:numel(state.solverState)
-            if isfield(state.solverState{s}, 't')
-                state.solverState{s}.t = 0;
-            end
-        end
-    end
-
+    state.solverState = cell(1, numel(net.params)) ;
+    state.solverState(:) = {0} ;
 
     % -----------
     % Initilizing

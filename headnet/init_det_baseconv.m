@@ -17,7 +17,7 @@ function net = init_det_baseconv(sz, opts)
         lastDim = opts.projectInDims;
     end 
     
-    padsz = ceil(sz / 2 * opts.kernelRatio);
+    padsz = ceil(sz / 2);
     filsz = padsz * 2 + 1;  
     net.addLayer('detconv2', dagnn.Conv('size', [filsz(2), filsz(1), lastDim, 1], ...
                  'hasBias', true, 'pad', [padsz(2), padsz(2), padsz(1), padsz(1)], 'stride', [1, 1]), ...

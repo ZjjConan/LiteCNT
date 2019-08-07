@@ -1,4 +1,4 @@
-function featr = lcrt_extract_feature(net, img, opts)
+function featr = lcnt_extract_feature(net, img, opts)
     net.mode = 'test';
     
     if strcmpi(net.device, 'gpu')

@@ -52,14 +52,9 @@ function state = lcnt_track(state, img)
         state.trainFeatrs{end+1} = featr(:,:,:,sdelta);
         state.trainLabels{end+1} = circshift(state.trainLabels{1}, [rdelta cdelta]);
         if numel(state.trainLabels) > state.oparams.numSamples
-            if state.oparams.FIFO
-                index = 2;
-            else
-                [~, index] = min(state.trainScores);
-            end
-            state.trainScores(index) = [];
-            state.trainFeatrs(index) = [];
-            state.trainLabels(index) = [];
+            state.trainScores(2) = [];
+            state.trainFeatrs(2) = [];
+            state.trainLabels(2) = [];
         end
     end
 end
