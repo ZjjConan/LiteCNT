@@ -12,9 +12,16 @@ This repository includes Matlab code for an unpublished tech-report (also includ
 
 #### A state-of-the-art lightweight tracker (around 100 KB)
 
+<p align="center">
+<img width="560" height="240" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/speed_auc_modelsize_otb2015_crop.pdf">
+<!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
+</p>
+
+
 Most of previous researches in regression trackers mainly explore deep models for feature extraction, and then use sophisticated architectures for online detection. Such systems have many a massive number of trainable parameters, introducing the risk of severe over-fitting. Moreover, the increasingly complex model severely compromises the speed for many practical applications. Recently, several lightweight structures based discriminative correlation filters (DCF) have been proposed for tracking problem, while their performance lags far behind some state-of-the-art trackers. We argue that DCFs often learn a single linear template that cannot well discriminate targets from their surroundings. Furthermore, template updates by linear interpolation in such trackers will include many noisy example, degrading the trained model. In this paper, we present a simple yet effective system, called LiteCNT. Our algorithm only consists of three convolutional layers for the whole tracking process. In addition, a multi-region convolutional operator is introduced for regression output. This idea is simple but powerful as it enables our tracker to capture more details of target object. We further derive an efficient and effective operator to approximate multi-region aggregation. Extensive experiments on five benchmark datasets, including OTB2013, OTB2015, UAV123, LaSOT and VOT2017, illustrate that the proposed method performs well comparable with state-of-the-art trackers. For example, our LiteCNT contains only 100 KB in model size and operates at 50 FPS on a single GPU, while obtaining 65.9\% AUC on OTB2015.
 
 --------------------------------------------------------------------------------------
+
 
 ### Requirements
 
@@ -40,14 +47,14 @@ We provide our new results on various benchmarks for analysis. For VOT testing, 
 ### Results on OTB2015
 
 <p align="center">
-<img width="480" height="210" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png">
+<img width="560" height="240" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png">
 <!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
 </p>
 
 ### Results on UAV123
 
 <p align="center">
-<img width="480" height="210" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_uav123.png">
+<img width="560" height="240" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_uav123.png">
 <!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
 </p>
 
