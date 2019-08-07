@@ -40,14 +40,15 @@ We provide our new results on various benchmarks for analysis. For VOT testing, 
 ### Results on OTB2015
 
 <p align="center">
-<img width="460" height="300" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png">
+<img width="480" height="210" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png">
 <!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
 </p>
 
 ### Results on UAV123
 
 <p align="center">
-![UAV123](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_uav123.png)
+<img width="480" height="210" src="https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_uav123.png">
+<!-- ![OTB2015](https://raw.githubusercontent.com/ZjjConan/LiteCNT/master/paper/soa_otb100.png) -->
 </p>
 
 **Note:** This is a little difference to the technique paper. We use 1/10 for gaussian labels generation, and use a smaller learning rate to update the model. Some results are shown as below: 
@@ -60,6 +61,13 @@ We provide our new results on various benchmarks for analysis. For VOT testing, 
 | This w/o AMR     |    64.3       |  50.8      | 0.504         | 1.553        | 0.230         | 0.208            |
 | CFNet [1]        |    56.3       |  47.7      | 0.473         | 3.467        | 0.126         | 0.107            |
 | DCFNet [2]       |    58.0       |  --        | --            | --           | --            | --               |
+
+
+|                  | Model Size    |  Speed |
+| :----            |    :----:     | :----: |
+| LiteCNT          |    117 KB     | 50     |
+| CFNet [1]        |    76 KB      | 43     |
+| DCFNet [2]       |    79 KB      | 91     |
 
 ------------------------------------------------
 
